@@ -10,6 +10,10 @@
 #import <CoreLocation/CoreLocation.h>
 #import "LBWeakList.h"
 
+NSString *const LBLocationCenterNewLocationAvaliableNotification = @"LBLocationCenterNewLocationAvaliableNotification";
+NSString *const LBLocationCenterNewLocationValueKey = @"LBLocationCenterNewLocationValueKey";
+
+
 static LBLocationCenter* sharedInstance = nil;
 
 static NSString* kRegionMonitorID = @"co.gongch.lab.BgTracker.defaultRegion";
@@ -92,16 +96,16 @@ static NSString* kRegionMonitorID = @"co.gongch.lab.BgTracker.defaultRegion";
     self.locationManager.pausesLocationUpdatesAutomatically = NO;
     [self requestLocationAuthorization];
     
-    if (_locationRecords == nil) {
-        NSMutableArray* array = [NSKeyedUnarchiver unarchiveObjectWithFile:[self datafilePath]];
-        _locationRecords = [[NSMutableArray alloc] init];
-        if (array != nil) {
-            [_locationRecords addObjectsFromArray:array];
-            NSLog(@"LocationCenter loaded %ld records", (unsigned long) array.count);
-        } else {
-            NSLog(@"LocationCenter loaded 0 record");
-        }
-    }
+//    if (_locationRecords == nil) {
+//        NSMutableArray* array = [NSKeyedUnarchiver unarchiveObjectWithFile:[self datafilePath]];
+//        _locationRecords = [[NSMutableArray alloc] init];
+//        if (array != nil) {
+//            [_locationRecords addObjectsFromArray:array];
+//            NSLog(@"LocationCenter loaded %ld records", (unsigned long) array.count);
+//        } else {
+//            NSLog(@"LocationCenter loaded 0 record");
+//        }
+//    }
     
     if (self.isReady) {
         NSLog(@"LocationCenter is ready :)");
@@ -239,15 +243,17 @@ static NSString* kRegionMonitorID = @"co.gongch.lab.BgTracker.defaultRegion";
     
     LBLocationRecord *record = [[LBLocationRecord alloc] initWithCLLocation:location
                                                          monitoringType:self.monitoringType];
+    
     self.lastUpdateTime = record.timestamp;
     NSLog(@"%@", record);
     
+    [self notifyNewRecordAvaliable:record];
+    
     [_locationRecords insertObject:record atIndex:0];
     [self notifyInsertAtIndex:0];
-    
     if (self.monitoringType == LBBackgroundMonitoring) {
         // save data in background
-        [self saveData];
+//        [self saveData];
     }
 }
 
@@ -256,13 +262,14 @@ static NSString* kRegionMonitorID = @"co.gongch.lab.BgTracker.defaultRegion";
         CLCircularRegion *circularRegion = (CLCircularRegion *) region;
         LBLocationRecord *record = [[LBLocationRecord alloc] initWithCLCoordinate2D:circularRegion.center
                                                                  monitoringType:LBExitRegion];
+        [self notifyNewRecordAvaliable:record];
         
         [_locationRecords insertObject:record atIndex:0];
         [self notifyInsertAtIndex:0];
         
         if (self.monitoringType == LBBackgroundMonitoring) {
             // save data in background
-            [self saveData];
+//            [self saveData];
         }
 
         NSLog(@"exit region!");
@@ -273,12 +280,14 @@ static NSString* kRegionMonitorID = @"co.gongch.lab.BgTracker.defaultRegion";
 - (void)locationManager:( CLLocationManager *)manager didVisit:( CLVisit *)visit {
     LBLocationRecord *record = [[LBLocationRecord alloc] initWithCLCoordinate2D:visit.coordinate
                                                              monitoringType:LBVisitedLocation];
+    [self notifyNewRecordAvaliable:record];
+    
     [_locationRecords insertObject:record atIndex:0];
     [self notifyInsertAtIndex:0];
     
     if (self.monitoringType == LBBackgroundMonitoring) {
         // save data in background
-        [self saveData];
+//        [self saveData];
     }
     
     NSLog(@"visited: %@", record);
@@ -303,6 +312,8 @@ static NSString* kRegionMonitorID = @"co.gongch.lab.BgTracker.defaultRegion";
     return _dataDirty;
 }
 
+
+//FIXME: Will be deleted . _ Jason .
 - (void)notifyInsertAtIndex:(NSUInteger)index {
     if (!_dataDirty) {
         _dataDirty = YES;
@@ -316,20 +327,26 @@ static NSString* kRegionMonitorID = @"co.gongch.lab.BgTracker.defaultRegion";
     }];
 }
 
-- (void)clearAllData {
-    if (_locationRecords.count > 0) {
-        [_locationRecords removeAllObjects];
-        _dataDirty = YES;
-        NSLog(@"LocationCenter data clear!");
-        [_delegates forEach:^(id object) {
-            id <LBLocationCenterDelegate> delegate = object;
-            if ([delegate respondsToSelector:@selector(locationCenterDidClearAllData:)]) {
-                [delegate locationCenterDidClearAllData:self];
-            }
-        }];
-    }
+- (void)notifyNewRecordAvaliable:(LBLocationRecord *)record
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:LBLocationCenterNewLocationAvaliableNotification object:self userInfo:@{LBLocationCenterNewLocationValueKey:[record copy]}];
 }
 
+//
+//- (void)clearAllData {
+//    if (_locationRecords.count > 0) {
+//        [_locationRecords removeAllObjects];
+//        _dataDirty = YES;
+//        NSLog(@"LocationCenter data clear!");
+//        [_delegates forEach:^(id object) {
+//            id <LBLocationCenterDelegate> delegate = object;
+//            if ([delegate respondsToSelector:@selector(locationCenterDidClearAllData:)]) {
+//                [delegate locationCenterDidClearAllData:self];
+//            }
+//        }];
+//    }
+//}
+//
 - (void)saveData {
     if (_dataDirty) {
         [NSKeyedArchiver archiveRootObject:_locationRecords toFile:[self datafilePath]];

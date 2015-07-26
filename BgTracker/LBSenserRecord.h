@@ -12,7 +12,7 @@
 @class CMGyroData;
 @class CMMagnetometerData;
 
-@interface LBSenserRecord : NSObject
+@interface LBSenserRecord : NSObject<NSCoding>
 
 - (instancetype)init;
 - (NSDictionary *)JSONRepresentation;

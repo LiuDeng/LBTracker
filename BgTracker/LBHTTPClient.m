@@ -12,20 +12,22 @@
 #import "LBDeviceInfoManager.h"
 #import "LBLocationRecord.h"
 #import "LBSenserRecord.h"
+#import "LBDataCenter.h"
+
 
 static NSString *const kLBSenzLeancloudHostURlString  = @"https://api.leancloud.cn";
 static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f306f4fc254cdc7becb73821a";
-
-typedef void(^LBHTTPClientUploadSuccessBlock)(id reponseObject, NSDictionary *info);
-typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
-
+//
+//typedef void(^LBHTTPClientUploadSuccessBlock)(id reponseObject, NSDictionary *info);
+//typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
+//
 
 @interface LBHTTPClient ()
 
-@property (nonatomic, copy) LBHTTPClientUploadSuccessBlock lusBlock;
-@property (nonatomic, copy) LBHTTPClientFailureBlock lufBlock;
-@property (nonatomic, copy) LBHTTPClientUploadSuccessBlock susBlock;
-@property (nonatomic, copy) LBHTTPClientFailureBlock sufBlock;
+//@property (nonatomic, copy) LBHTTPClientUploadSuccessBlock lusBlock;
+//@property (nonatomic, copy) LBHTTPClientFailureBlock lufBlock;
+//@property (nonatomic, copy) LBHTTPClientUploadSuccessBlock susBlock;
+//@property (nonatomic, copy) LBHTTPClientFailureBlock sufBlock;
 
 @end
 
@@ -35,8 +37,14 @@ typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
 + (LBHTTPClient *)sharedClient
 {
     if (![LBInstallation installationAvaliable]) {
-        return nil;
+        static LBHTTPClient *_fakeClient = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            _fakeClient = [[LBHTTPClient alloc] init];
+        });
+        return _fakeClient;
     }
+    
     return [self leancloudClientWithInstallation:[LBInstallation sharedInstance]];
 }
 
@@ -47,7 +55,6 @@ typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
     dispatch_once(&onceToken, ^{
         __sharedManager = [[self alloc] initWithBaseURL:[NSURL URLWithString:kLBSenzLeancloudHostURlString]];
         __sharedManager.requestSerializer = [LBLeancloudRequestSerializer leancloudSerializerWithInstallation:installation];
-        
     });
     return __sharedManager;
 }
@@ -56,7 +63,7 @@ typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
 {
     if ([LBInstallation installationAvaliable]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-//            [self.delegate trackerDidInitialized];
+            [self.delegate HTTPClientDidInitializedWithInfo:nil];
         });
         return;
     }
@@ -88,14 +95,16 @@ typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
     NSData *data = [NSJSONSerialization dataWithJSONObject:param options:NSJSONWritingPrettyPrinted error:NULL];
     [request setHTTPBody:data];
     
+    __weak typeof(self) weakSelf = self;
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue currentQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
             if(!connectionError && [data length] > 0){
                 NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:NULL];
                 LBInstallation *installation = [[LBInstallation alloc] initWithDictionary:dict[@"result"]];
                 [installation saveToDisk];
-                if (self.delegate && [self.delegate respondsToSelector:@selector(trackerDidInitialized)]) {
-                    [self.delegate trackerDidInitialized];
+                if (strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(HTTPClientDidInitializedWithInfo:)]) {
+                    [strongSelf.delegate HTTPClientDidInitializedWithInfo:nil];
                 }
             }else{
                 NSLog(@"error : %@",connectionError);
@@ -135,9 +144,8 @@ typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
                    onFailure:(void (^)(NSError *error, NSDictionary *info))failedBlock;
 
 {
-    self.lusBlock = successBlock;
-    self.lufBlock = failedBlock;
-    
+//    self.lusBlock = successBlock;
+//    self.lufBlock = failedBlock;
     NSDictionary *param = @{@"timestamp":@([locationRecord.timestamp timeIntervalSince1970]),
                             @"type":@"location",
                             @"source":@"internal",
@@ -151,6 +159,7 @@ typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
     }
        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
            NSLog(@"fail");
+//           [[LBDataCenter sharedInstance] pushPendingLocationRecord:locationRecord];
     }];
     
 }
@@ -179,8 +188,8 @@ typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
                   onSuccess:(void (^)(id responseObject, NSDictionary *info))successBlock
                   onFailure:(void (^)(NSError *error, NSDictionary *info))failedBlock;
 {
-    self.susBlock = successBlock;
-    self.sufBlock = failedBlock;
+//    self.susBlock = successBlock;
+//    self.sufBlock = failedBlock;
     
     NSMutableArray *JSONArray = [NSMutableArray arrayWithCapacity:[sensorRecords count]];
     [sensorRecords enumerateObjectsUsingBlock:^(LBSenserRecord* obj, NSUInteger idx, BOOL *stop) {
@@ -198,7 +207,7 @@ typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
            NSLog(@"success ");
        }
        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           NSLog(@"fail");
+//           [[LBDataCenter sharedInstance] pushPendingSensorRecords:sensorRecords];
        }];
 
 }

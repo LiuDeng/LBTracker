@@ -13,8 +13,7 @@
 
 @protocol LBHTTPClientDelegate <NSObject>
 
-- (void)HTTPClient:(LBHTTPClient *)client
-DidInitializedWithInfo:(NSDictionary *)info;
+- (void)HTTPClientDidInitializedWithInfo:( __unused NSDictionary  *)info;
 
 - (void)HTTPClientDidFailToInitializeWithError:(NSError *)error;
 

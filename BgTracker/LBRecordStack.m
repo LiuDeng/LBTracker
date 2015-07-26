@@ -29,6 +29,38 @@
     return self;
 }
 
+
+- (void)encodeWithCoder:(NSCoder *)aCoder;
+{
+    [aCoder encodeObject:@(self.capacity) forKey:@"capacity"];
+    [aCoder encodeObject:self.array forKey:@"array"];
+}
+
+
+- (id)initWithCoder:(NSCoder *)aDecoder;
+{
+    if (self = [super init]) {
+        self.capacity = [[aDecoder decodeObjectForKey:@"capacity"] integerValue];
+        self.array = [aDecoder decodeObjectForKey:@"array"];
+        _lock = [NSRecursiveLock new];
+    }
+    
+    return self;
+}
+
+
+- (BOOL)isEmpty
+{
+    BOOL isEmpaty = YES;
+    [self.lock lock];
+    if ([self.array count]) {
+        isEmpaty = NO;
+    }
+    [self.lock unlock];
+    return isEmpaty;
+}
+
+
 - (void)pushRecord:(id)record
 {
     [self.lock lock];

@@ -8,10 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@interface LBRecordStack : NSObject
+@interface LBRecordStack : NSObject<NSCoding>
 
 - (instancetype)initWithCapacity:(NSUInteger)capacity;
 
+- (BOOL)isEmpty;
 - (void)pushRecord:(id)record;
 - (id)pop;
 - (NSArray *)popForCount:(NSUInteger)count;

@@ -9,10 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @protocol LBTrackerDelegate <NSObject>
-
 - (void)trackerDidInitialized;
 - (void)trackerDidFaileToInitializeWithError:(NSError *)error;
-
 @end
 
 

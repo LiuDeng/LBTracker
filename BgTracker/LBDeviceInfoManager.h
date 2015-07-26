@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#define kCoreMotionDataReadyNotification    @"aluCoreMotionDataReadyNotification"
+
+extern NSString *const LBDeviceInfoManagerCoreMotionDataReadyNotification;
+extern NSString *const LBDeviceInfoManagerSensorValueKey;
 
 
 typedef void(^getDeviceIdCallback)(NSString *deviceId, NSError* err);

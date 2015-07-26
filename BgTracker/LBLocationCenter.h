@@ -10,6 +10,9 @@
 #import "LBLocationRecord.h"
 
 
+extern NSString *const LBLocationCenterNewLocationAvaliableNotification;
+extern NSString *const LBLocationCenterNewLocationValueKey;
+
 @class LBLocationCenter;
 
 @protocol LBLocationCenterDelegate <NSObject>
@@ -27,10 +30,10 @@
 - (void)stopForegroundUpdating;
 - (void)startBackgroundUpdating;
 - (void)stopBackgroundUpdating;
-
-- (void)clearAllData;
-- (void)saveData;
-
+//
+//- (void)clearAllData;
+//- (void)saveData;
+//
 - (void)addDelegate:(id <LBLocationCenterDelegate>)delegate;
 - (void)removeDelegate:(id <LBLocationCenterDelegate>)delegate;
 

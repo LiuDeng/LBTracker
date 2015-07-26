@@ -29,6 +29,27 @@
              };
 }
 
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self = [super init]) {
+        self.timestamp  = [[aDecoder decodeObjectForKey:@"timestamp"] doubleValue];
+        self.senserName = [aDecoder decodeObjectForKey:@"sensorName"];
+        self.accuracy   = [aDecoder decodeObjectForKey:@"accuracy"];
+        self.values     = [aDecoder decodeObjectForKey:@"values"];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:@(self.timestamp) forKey:@"timestamp"];
+    [aCoder encodeObject:self.senserName forKey:@"sensorName"];
+    [aCoder encodeObject:self.accuracy forKey:@"accuracy"];
+    [aCoder encodeObject:self.values forKey:@"values"];
+}
+
 @end
 
 

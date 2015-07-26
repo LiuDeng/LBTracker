@@ -54,7 +54,11 @@
     // TODO :
 }
 
-
+/*启动Tracker,工作方式:
+ 1. 开启一次定位数据采集,和传感器数据采集.采集到数据后停掉定位和传感器.等待定时器唤起下一次数据采集.
+ 2. 每10分钟启动一次定位请求,同时启动一次连续10秒钟的传感器数据采集.
+ 3. 传感器数据采集时间结束 && 定位数据返回 ＝> 启动数据上传.
+ */
 + (BOOL)startTracker
 {
     return [self startTrackerWithUploadTimeInterval:10*60];
@@ -67,16 +71,10 @@
 }
 
 
-/*启动Tracker,工作方式:
-    1. 开启一次定位数据采集,和传感器数据采集.采集到数据后停掉定位和传感器.等待定时器唤起下一次数据采集.
-    2. 每10分钟启动一次定位请求,同时启动一次连续10秒钟的传感器数据采集. 
-    3. 传感器数据采集时间结束 && 定位数据返回 ＝> 启动数据上传.
- */
-
 - (BOOL)startTrackerWithUploadTimeInterval:(NSTimeInterval)time
 {
     if (self.started) {
-        return YES;
+        [self stopTracker];
     }
     
     [[LBDataCenter sharedInstance] startDataColletionWithTimeInterval:time];
@@ -102,8 +100,7 @@
 
 #pragma mark - LBHTTPClientDelegate
 
-- (void)HTTPClient:(LBHTTPClient *)client
-DidInitializedWithInfo:(NSDictionary *)info;
+- (void)HTTPClientDidInitializedWithInfo:(NSDictionary *)info;
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(trackerDidInitialized)]) {
         [self.delegate trackerDidInitialized];

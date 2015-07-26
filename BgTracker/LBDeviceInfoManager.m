@@ -26,7 +26,7 @@
 #define IP_ADDR_IPv4    @"ipv4"
 #define IP_ADDR_IPv6    @"ipv6"
 
-#define kLBTackerUUIDKey           @"kLBTackerUUIDKey"
+#define kLBTackerUUIDKey     @"kLBTackerUUIDKey"
 /**重力*/
 #define GravityKey           @"Gravity"
 
@@ -46,6 +46,9 @@
 #define UPDATE_INTERVAL      3
 
 static LBDeviceInfoManager *s_deviceInfo = nil;
+NSString *const LBDeviceInfoManagerCoreMotionDataReadyNotification =  @"LBDeviceInfoManagerCoreMotionDataReadyNotification";
+
+NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorValueKey";
 
 @interface LBDeviceInfoManager() {
     NSString *_cachedApdid;
@@ -124,6 +127,7 @@ static LBDeviceInfoManager *s_deviceInfo = nil;
         }else {
             uuid = [[NSUUID UUID] UUIDString];
             [[NSUserDefaults  standardUserDefaults] setObject:uuid forKey:kLBTackerUUIDKey];
+            [[NSUserDefaults  standardUserDefaults] synchronize];
             _uuid = uuid;
         }
     }
@@ -315,6 +319,7 @@ static LBDeviceInfoManager *s_deviceInfo = nil;
             
         }
         if ([[self.coreMotionData objectForKey:AccelerometerKey] count] >= MAX_NUMBER && [[self.coreMotionData objectForKey:GravityKey] count] >= MAX_NUMBER) {
+            [self notifySensorRecordsAvaliable:[self.coreMotionData objectForKey:GravityKey]];
             [self.motionManager stopDeviceMotionUpdates];
         }
     }];
@@ -334,6 +339,7 @@ static LBDeviceInfoManager *s_deviceInfo = nil;
         }
         
         if ([[self.coreMotionData objectForKey:GyroscopeKey] count] >= MAX_NUMBER) {
+            [self notifySensorRecordsAvaliable:[self.coreMotionData objectForKey:GyroscopeKey]];
             [self.motionManager stopGyroUpdates];
         }
     }];
@@ -353,6 +359,7 @@ static LBDeviceInfoManager *s_deviceInfo = nil;
         }
         
         if ([[self.coreMotionData objectForKey:MagnetometerKey] count] >= MAX_NUMBER) {
+            [self notifySensorRecordsAvaliable:[self.coreMotionData objectForKey:MagnetometerKey]];
             [self.motionManager stopMagnetometerUpdates];
         }
     }];
@@ -411,6 +418,16 @@ static LBDeviceInfoManager *s_deviceInfo = nil;
     
     return haveOne;
 }
+
+#pragma mark - 
+
+- (void)notifySensorRecordsAvaliable:(NSArray *)records
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:LBDeviceInfoManagerCoreMotionDataReadyNotification
+                                                        object:self
+                                                      userInfo:@{LBDeviceInfoManagerSensorValueKey:records}];
+}
+
 
 #pragma mark - utils
 - (void)wait {

@@ -10,7 +10,11 @@
 #import "LBLocationCenter.h"
 #import "SettingsKeys.h"
 
-@interface AppDelegate ()
+
+//SDK import
+#import "LBTrackerInterface.h"
+
+@interface AppDelegate ()<LBTrackerDelegate>
 
 @end
 
@@ -41,13 +45,35 @@ willFinishLaunchingWithOptions:( NSDictionary *)launchOptions {
             [lc startForegroundUpdating];
         }
     }
+    
+    
+    // SDK Usage
+    [LBTrackerInterface initalizeTrackerWithDelegate:self];
+    
     return YES;
 }
+
+#pragma mark  - LBTrackerDelegate
+// SDK Usage
+- (void)trackerDidInitialized
+{
+    [LBTrackerInterface startTracker];
+}
+
+- (void)trackerDidFaileToInitializeWithError:(NSError *)error
+{
+    NSLog(@"error : %@",error);
+}
+
+
+
+#pragma mark - 
+
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     LBLocationCenter *lc = [LBLocationCenter sharedLocationCenter];
     [lc stopForegroundUpdating];
-    [lc saveData];
+//    [lc saveData];
 
     // go to background
     NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
@@ -59,7 +85,7 @@ willFinishLaunchingWithOptions:( NSDictionary *)launchOptions {
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     LBLocationCenter *lc = [LBLocationCenter sharedLocationCenter];
     [lc stopBackgroundUpdating];
-    [lc saveData];
+//    [lc saveData];
     
     // go to foreground
     NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
@@ -76,7 +102,11 @@ willFinishLaunchingWithOptions:( NSDictionary *)launchOptions {
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     LBLocationCenter *lc = [LBLocationCenter sharedLocationCenter];
-    [lc saveData];
+//    [lc saveData];
 }
+
+
+
+
 
 @end

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		964E53761B655764004EECA5 /* LBDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E53751B655764004EECA5 /* LBDataStore.m */; };
 		965C50EC1B64E58500808FF6 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 965C50EB1B64E58500808FF6 /* README.md */; };
 		967F8B1A1B61491F007AED5E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 967F8B191B61491F007AED5E /* LaunchScreen.xib */; };
 		967F8BB81B636358007AED5E /* LBLocationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BB31B636358007AED5E /* LBLocationCenter.m */; };
@@ -50,6 +51,8 @@
 
 /* Begin PBXFileReference section */
 		889D34D702365263E8673754 /* Pods-BgTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BgTracker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BgTracker/Pods-BgTracker.debug.xcconfig"; sourceTree = "<group>"; };
+		964E53741B655764004EECA5 /* LBDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBDataStore.h; sourceTree = "<group>"; };
+		964E53751B655764004EECA5 /* LBDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBDataStore.m; sourceTree = "<group>"; };
 		965C50EB1B64E58500808FF6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = BgTracker/README.md; sourceTree = "<group>"; };
 		967F8B191B61491F007AED5E /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		967F8BB21B636358007AED5E /* LBLocationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBLocationCenter.h; sourceTree = "<group>"; };
@@ -138,6 +141,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		964E53771B656B52004EECA5 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				96E8D56C1B64DAE600E80A64 /* LBRecordStack.h */,
+				96E8D56D1B64DAE600E80A64 /* LBRecordStack.m */,
+				967F8BB61B636358007AED5E /* LBWeakList.h */,
+				967F8BB71B636358007AED5E /* LBWeakList.m */,
+				96E8D5691B6496B300E80A64 /* LBLRUMemoryCache.h */,
+				96E8D56A1B6496B300E80A64 /* LBLRUMemoryCache.m */,
+			);
+			name = Base;
+			sourceTree = "<group>";
+		};
 		965C50EA1B64E54000808FF6 /* SDK */ = {
 			isa = PBXGroup;
 			children = (
@@ -164,6 +180,8 @@
 			children = (
 				967F8BBC1B63655D007AED5E /* LBDataCenter.h */,
 				967F8BBD1B63655D007AED5E /* LBDataCenter.m */,
+				964E53741B655764004EECA5 /* LBDataStore.h */,
+				964E53751B655764004EECA5 /* LBDataStore.m */,
 				967F8BDD1B639093007AED5E /* DataCollection */,
 			);
 			name = Data;
@@ -194,6 +212,7 @@
 		967F8BD41B637D9B007AED5E /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				964E53771B656B52004EECA5 /* Base */,
 				967F8BB41B636358007AED5E /* LBLocationRecord.h */,
 				967F8BB51B636358007AED5E /* LBLocationRecord.m */,
 				96BC08D01B6429280040B0F1 /* LBSenserRecord.h */,
@@ -243,12 +262,6 @@
 		96C667BB1B63FD3A00F468B5 /* Ultis */ = {
 			isa = PBXGroup;
 			children = (
-				96E8D56C1B64DAE600E80A64 /* LBRecordStack.h */,
-				96E8D56D1B64DAE600E80A64 /* LBRecordStack.m */,
-				967F8BB61B636358007AED5E /* LBWeakList.h */,
-				967F8BB71B636358007AED5E /* LBWeakList.m */,
-				96E8D5691B6496B300E80A64 /* LBLRUMemoryCache.h */,
-				96E8D56A1B6496B300E80A64 /* LBLRUMemoryCache.m */,
 				96C667BC1B641A6A00F468B5 /* LBTimer.h */,
 				96C667BD1B641A6A00F468B5 /* LBTimer.m */,
 				967F8BE21B63E5E2007AED5E /* LBSingleton.h */,
@@ -467,6 +480,7 @@
 				F09762201B3294F500D31685 /* AppDelegate.m in Sources */,
 				965C50EC1B64E58500808FF6 /* README.md in Sources */,
 				F09762531B329C1B00D31685 /* DataViewController.m in Sources */,
+				964E53761B655764004EECA5 /* LBDataStore.m in Sources */,
 				F0A568081B371F6100F98407 /* MapViewController.m in Sources */,
 				967F8BB91B636358007AED5E /* LBLocationRecord.m in Sources */,
 				967F8BD31B637CCC007AED5E /* LBInstallation.m in Sources */,
