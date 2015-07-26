@@ -1,29 +1,27 @@
-
-
-
 ### SDK使用方式
 
-```
-
-#import "LBTrackerInterface.h"
-
-- (BOOL)applicationDidFinishLaunch:... 
-{
-    [LBTrackerInterface initalizeTrackerWithDelegate:self];
-}
-
-#pragma mark  - LBTrackerDelegate
-// SDK Usage
-- (void)trackerDidInitialized
-{
-    [LBTrackerInterface startTracker];
-}
 
 
-```
+
+    #import "LBTrackerInterface.h"
+
+    - (BOOL)applicationDidFinishLaunch:... 
+    {
+        [LBTrackerInterface initalizeTrackerWithDelegate:self];
+    }
+
+    #pragma mark  - LBTrackerDelegate
+    // SDK Usage
+    - (void)trackerDidInitialized
+    {
+        [LBTrackerInterface startTracker];
+    }
 
 
-### 方案设计
+
+
+
+### 结构
 
 1. 分三个模块 对外接口层(对外接口)、数据中心(数据采集,数据存储/吞吐,本地缓存,内存缓存)、网络访问(HTTP访问)，各模块高聚合 低耦合 便于扩展
 
