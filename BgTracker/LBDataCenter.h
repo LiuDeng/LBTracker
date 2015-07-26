@@ -9,13 +9,22 @@
 #import <Foundation/Foundation.h>
 #import "LBSingleton.h"
 
-//TODO: 
+
+@protocol LBDataCenterDelegate <NSObject>
+
+- (void)dataCenterDidInitialized;
+- (void)dataCenterDidFailToInitializeWithError:(NSError *)error;
+
+@end
+
+
 @interface LBDataCenter : NSObject
 
 DEF_SINGLETON;
 
+@property (nonatomic, weak) id<LBDataCenterDelegate>delegate;
 
-+ (void)initializeDataCenter;
++ (void)initializeDataCenterWithDelegate:(id<LBDataCenterDelegate>)delegate;
 
 - (void)startDataColletionWithTimeInterval:(NSTimeInterval)time;
 - (void)stopDataCollection;

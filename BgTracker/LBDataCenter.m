@@ -1,3 +1,4 @@
+
 //
 //  LBDataCenter.m
 //  LBTracker
@@ -10,12 +11,12 @@
 #import "LBLocationCenter.h"
 #import "LBDeviceInfoManager.h"
 #import "LBDataStore.h"
+#import "LBLocationTracker.h"
 
 @interface LBDataCenter ()<LBLocationCenterDelegate>
 @property (nonatomic, strong) NSOperationQueue *queue;
 @property (nonatomic, strong) NSTimer *dataCollectionTimer;
 @property (nonatomic, strong) NSTimer *sensorTimer;
-
 @property (nonatomic, strong) LBDataStore *dataStore;
 
 @end
@@ -27,11 +28,13 @@
 
 IMP_SINGLETON;
 
-+ (void)initializeDataCenter
++ (void)initializeDataCenterWithDelegate:(id<LBDataCenterDelegate>)delegate
 {
-    [[LBLocationCenter sharedLocationCenter] prepare];
-    [LBDataCenter sharedInstance];
+    LBDataCenter *dc = [LBDataCenter sharedInstance];
+    dc.delegate = delegate;
+    [[LBLocationCenter sharedLocationCenter] prepareWithDelegate:dc];
 }
+
 
 
 - (instancetype) init
@@ -74,7 +77,7 @@ IMP_SINGLETON;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark -
+#pragma mark - Data collection
 
 - (void)startDataColletionWithTimeInterval:(NSTimeInterval)time
 {
@@ -84,17 +87,12 @@ IMP_SINGLETON;
     }
     
     [[LBLocationCenter sharedLocationCenter] startForegroundUpdating];
-    [[LBLocationCenter sharedLocationCenter] addDelegate:self];
-    [[LBDeviceInfoManager sharedInstance] startCoreMotionMonitorClearData:YES];
     // Fire data collection every 10min.
-    self.dataCollectionTimer = [NSTimer scheduledTimerWithTimeInterval:time
+    self.dataCollectionTimer = [NSTimer scheduledTimerWithTimeInterval:120
                                                         target:self
                                                       selector:@selector(fireDataCollection)
                                                       userInfo:nil
                                                        repeats:YES];
-    
-
-
     
 }
 
@@ -113,8 +111,25 @@ IMP_SINGLETON;
         [[LBLocationCenter sharedLocationCenter] startForegroundUpdating];
     }
     
-    [[LBDeviceInfoManager sharedInstance] startCoreMotionMonitorClearData:YES];
+}
+
+- (void)onDataReadyForUpload
+{
+    [[LBLocationCenter sharedLocationCenter] stopForegroundUpdating];
+    [[LBLocationCenter sharedLocationCenter] stopForegroundUpdating];
+    [[LBDeviceInfoManager sharedInstance] stopCoreMotionMonitorClearData:YES];
+    NSLog(@"data ready to upload . ");
     
+}
+
+
+#pragma mark - Notification
+
+- (void)locationRecordAvaliable:(NSNotification *)note
+{
+    [self.dataStore pushLocationRecord:note.userInfo[LBLocationCenterNewLocationValueKey]];
+    
+    [[LBDeviceInfoManager sharedInstance] startCoreMotionMonitorClearData:YES];
     if (self.sensorTimer) {
         [self.sensorTimer invalidate];
     }
@@ -123,24 +138,7 @@ IMP_SINGLETON;
                                                       selector:@selector(onDataReadyForUpload)
                                                       userInfo:nil
                                                        repeats:YES];
-}
 
-
-#pragma mark - 
-
-- (void)onDataReadyForUpload
-{
-    NSLog(@"data ready to upload . ");
-}
-
-
-#pragma mark - Notification
-
-
-
-- (void)locationRecordAvaliable:(NSNotification *)note
-{
-    [self.dataStore pushLocationRecord:note.userInfo[LBLocationCenterNewLocationValueKey]];
 }
 
 - (void)sensorRecordsAvaliable:(NSNotification *)note
@@ -174,4 +172,18 @@ IMP_SINGLETON;
 {
     [self.dataStore pushLocationRecord:locationCenter.locationRecords[index]];
 }
+
+- (void)locationCenter:(LBLocationCenter *)locationCenter didPreparedWithInfo:(NSDictionary *)info;
+{
+    [self.delegate dataCenterDidInitialized];
+}
+- (void)locationCenter:(LBLocationCenter *)locationCenter didFailToPrepareWithError:(NSError *)error;
+{
+    [self.delegate dataCenterDidFailToInitializeWithError:error];
+}
+
+
+
+
+
 @end

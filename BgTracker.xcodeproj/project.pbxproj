@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		964E53761B655764004EECA5 /* LBDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E53751B655764004EECA5 /* LBDataStore.m */; };
+		964E537E1B65848C004EECA5 /* LBBackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E53791B65848C004EECA5 /* LBBackgroundTaskManager.m */; };
+		964E537F1B65848C004EECA5 /* LBLocationShareModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E537B1B65848C004EECA5 /* LBLocationShareModel.m */; };
+		964E53801B65848C004EECA5 /* LBLocationTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E537D1B65848C004EECA5 /* LBLocationTracker.m */; };
 		965C50EC1B64E58500808FF6 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 965C50EB1B64E58500808FF6 /* README.md */; };
 		967F8B1A1B61491F007AED5E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 967F8B191B61491F007AED5E /* LaunchScreen.xib */; };
 		967F8BB81B636358007AED5E /* LBLocationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BB31B636358007AED5E /* LBLocationCenter.m */; };
@@ -53,6 +56,12 @@
 		889D34D702365263E8673754 /* Pods-BgTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BgTracker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BgTracker/Pods-BgTracker.debug.xcconfig"; sourceTree = "<group>"; };
 		964E53741B655764004EECA5 /* LBDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBDataStore.h; sourceTree = "<group>"; };
 		964E53751B655764004EECA5 /* LBDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBDataStore.m; sourceTree = "<group>"; };
+		964E53781B65848C004EECA5 /* LBBackgroundTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBBackgroundTaskManager.h; sourceTree = "<group>"; };
+		964E53791B65848C004EECA5 /* LBBackgroundTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBBackgroundTaskManager.m; sourceTree = "<group>"; };
+		964E537A1B65848C004EECA5 /* LBLocationShareModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBLocationShareModel.h; sourceTree = "<group>"; };
+		964E537B1B65848C004EECA5 /* LBLocationShareModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBLocationShareModel.m; sourceTree = "<group>"; };
+		964E537C1B65848C004EECA5 /* LBLocationTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBLocationTracker.h; sourceTree = "<group>"; };
+		964E537D1B65848C004EECA5 /* LBLocationTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBLocationTracker.m; sourceTree = "<group>"; };
 		965C50EB1B64E58500808FF6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = BgTracker/README.md; sourceTree = "<group>"; };
 		967F8B191B61491F007AED5E /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		967F8BB21B636358007AED5E /* LBLocationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBLocationCenter.h; sourceTree = "<group>"; };
@@ -169,6 +178,12 @@
 		967F8BBB1B636367007AED5E /* Localtion */ = {
 			isa = PBXGroup;
 			children = (
+				964E537C1B65848C004EECA5 /* LBLocationTracker.h */,
+				964E537D1B65848C004EECA5 /* LBLocationTracker.m */,
+				964E53781B65848C004EECA5 /* LBBackgroundTaskManager.h */,
+				964E53791B65848C004EECA5 /* LBBackgroundTaskManager.m */,
+				964E537A1B65848C004EECA5 /* LBLocationShareModel.h */,
+				964E537B1B65848C004EECA5 /* LBLocationShareModel.m */,
 				967F8BB21B636358007AED5E /* LBLocationCenter.h */,
 				967F8BB31B636358007AED5E /* LBLocationCenter.m */,
 			);
@@ -478,6 +493,7 @@
 				967F8BC41B636594007AED5E /* LBNetReachability.m in Sources */,
 				96E8D56E1B64DAE600E80A64 /* LBRecordStack.m in Sources */,
 				F09762201B3294F500D31685 /* AppDelegate.m in Sources */,
+				964E53801B65848C004EECA5 /* LBLocationTracker.m in Sources */,
 				965C50EC1B64E58500808FF6 /* README.md in Sources */,
 				F09762531B329C1B00D31685 /* DataViewController.m in Sources */,
 				964E53761B655764004EECA5 /* LBDataStore.m in Sources */,
@@ -486,6 +502,7 @@
 				967F8BD31B637CCC007AED5E /* LBInstallation.m in Sources */,
 				967F8BBE1B63655D007AED5E /* LBDataCenter.m in Sources */,
 				967F8BC91B6366D2007AED5E /* LBHTTPClient.m in Sources */,
+				964E537E1B65848C004EECA5 /* LBBackgroundTaskManager.m in Sources */,
 				F097621D1B3294F500D31685 /* main.m in Sources */,
 				96E8D56B1B6496B300E80A64 /* LBLRUMemoryCache.m in Sources */,
 				967F8BB81B636358007AED5E /* LBLocationCenter.m in Sources */,
@@ -494,6 +511,7 @@
 				967F8BE01B63BA89007AED5E /* LBTrackerInterface.m in Sources */,
 				967F8BBA1B636358007AED5E /* LBWeakList.m in Sources */,
 				96C667BE1B641A6A00F468B5 /* LBTimer.m in Sources */,
+				964E537F1B65848C004EECA5 /* LBLocationShareModel.m in Sources */,
 				967F8BD01B6377E0007AED5E /* LBRequstSerializer.m in Sources */,
 				967F8BC51B636594007AED5E /* LBReachability.m in Sources */,
 				F0FFE9831B34220E00023DFE /* SettingsViewController.m in Sources */,

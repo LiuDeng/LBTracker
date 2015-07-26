@@ -10,6 +10,8 @@
 #import <CoreLocation/CoreLocation.h>
 #import "LBWeakList.h"
 
+
+NSString *const LBLocationCenterErrorDomain = @"LBLocationCenterErrorDomain";
 NSString *const LBLocationCenterNewLocationAvaliableNotification = @"LBLocationCenterNewLocationAvaliableNotification";
 NSString *const LBLocationCenterNewLocationValueKey = @"LBLocationCenterNewLocationValueKey";
 
@@ -81,9 +83,11 @@ static NSString* kRegionMonitorID = @"co.gongch.lab.BgTracker.defaultRegion";
 
 #pragma mark - Location Service
 
-- (void)prepare {
+- (void)prepareWithDelegate:(id<LBLocationCenterDelegate>)delegate;{
+    self.delegate = delegate;
     if (self.isReady) {
         NSLog(@"LocationCenter is already ready :p");
+        [self.delegate locationCenter:self didPreparedWithInfo:nil];
         return;
     }
     
@@ -114,7 +118,7 @@ static NSString* kRegionMonitorID = @"co.gongch.lab.BgTracker.defaultRegion";
 
 - (BOOL)isReady {
     CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
-    return status == kCLAuthorizationStatusAuthorizedAlways && _locationRecords != nil;
+    return status == kCLAuthorizationStatusAuthorizedAlways;
 }
 
 - (void)requestLocationAuthorization
@@ -230,6 +234,19 @@ static NSString* kRegionMonitorID = @"co.gongch.lab.BgTracker.defaultRegion";
     }
 }
 
+
+#pragma mark - CLLocationManager Delegate
+
+-(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    if (status == kCLAuthorizationStatusAuthorizedAlways) {
+        [self.delegate locationCenter:self didPreparedWithInfo:nil];
+    }else{
+        [self.delegate locationCenter:self didFailToPrepareWithError:[NSError errorWithDomain:LBLocationCenterErrorDomain code:-1 userInfo:@{@"reason":@"Authorization Failed"}]];
+    }
+    
+}
+
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     // If it's a relatively recent event, turn off updates to save power.
     CLLocation* location = [locations lastObject];
@@ -255,6 +272,12 @@ static NSString* kRegionMonitorID = @"co.gongch.lab.BgTracker.defaultRegion";
         // save data in background
 //        [self saveData];
     }
+}
+
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    NSLog(@"error : %@", error);
 }
 
 - (void)locationManager:( CLLocationManager *)manager didExitRegion:( CLRegion *)region {

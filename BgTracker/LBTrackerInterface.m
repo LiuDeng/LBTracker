@@ -11,9 +11,11 @@
 #import "LBDataCenter.h"
 
 
-
-@interface LBTrackerInterface () <LBHTTPClientDelegate>
-@property (nonatomic, assign) BOOL started;
+///该类管理HTTPClient和DataCenter的生命周期
+@interface LBTrackerInterface () <LBHTTPClientDelegate,LBDataCenterDelegate>
+@property (nonatomic,assign ) BOOL started;
+@property (nonatomic,assign ) BOOL clientReady;
+@property (nonatomic,assign ) BOOL dataCenterReady;
 @end
 
 
@@ -44,7 +46,8 @@
 
 - (void)initalizeTrackerWithDelegate:(id<LBTrackerDelegate>)delegate
 {
-    [LBDataCenter initializeDataCenter];
+    self.delegate = delegate;
+    [LBDataCenter initializeDataCenterWithDelegate:self];
     [[LBHTTPClient sharedClient] initializeClientWithDelegate:self];
 }
 
@@ -102,8 +105,11 @@
 
 - (void)HTTPClientDidInitializedWithInfo:(NSDictionary *)info;
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(trackerDidInitialized)]) {
-        [self.delegate trackerDidInitialized];
+    self.clientReady = YES;
+    if (self.dataCenterReady) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(trackerDidInitialized)]) {
+            [self.delegate trackerDidInitialized];
+        }
     }
 }
 
@@ -114,6 +120,24 @@
     }
 }
 
+#pragma mark - LBDataCenterDelegate
+
+- (void)dataCenterDidInitialized;
+{
+    self.dataCenterReady = YES;
+    if (self.clientReady) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(trackerDidFaileToInitializeWithError:)]) {
+            [self.delegate trackerDidInitialized];
+        }
+    }
+}
+- (void)dataCenterDidFailToInitializeWithError:(NSError *)error;
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(trackerDidFaileToInitializeWithError:)]) {
+        [self.delegate trackerDidFaileToInitializeWithError:error];
+    }
+    
+}
 
 
 

@@ -32,19 +32,19 @@ willFinishLaunchingWithOptions:( NSDictionary *)launchOptions {
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    LBLocationCenter *lc = [LBLocationCenter sharedLocationCenter];
-    [lc prepare];
-    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
-    if ([launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey] != nil) {
-        // start from background
-        if ([[def objectForKey:kTrackingInBackground] boolValue] == YES) {
-            [lc startBackgroundUpdating];
-        }
-    } else {
-        if ([[def objectForKey:kTrackingInForeground] boolValue] == YES) {
-            [lc startForegroundUpdating];
-        }
-    }
+//    LBLocationCenter *lc = [LBLocationCenter sharedLocationCenter];
+//    [lc prepare];
+//    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+//    if ([launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey] != nil) {
+//        // start from background
+//        if ([[def objectForKey:kTrackingInBackground] boolValue] == YES) {
+//            [lc startBackgroundUpdating];
+//        }
+//    } else {
+//        if ([[def objectForKey:kTrackingInForeground] boolValue] == YES) {
+//            [lc startForegroundUpdating];
+//        }
+//    }
     
     
     // SDK Usage
@@ -68,32 +68,32 @@ willFinishLaunchingWithOptions:( NSDictionary *)launchOptions {
 
 
 #pragma mark - 
-
-
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    LBLocationCenter *lc = [LBLocationCenter sharedLocationCenter];
-    [lc stopForegroundUpdating];
-//    [lc saveData];
-
-    // go to background
-    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
-    if ([[def objectForKey:kTrackingInBackground] boolValue] == YES) {
-        [lc startBackgroundUpdating];
-    }
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    LBLocationCenter *lc = [LBLocationCenter sharedLocationCenter];
-    [lc stopBackgroundUpdating];
-//    [lc saveData];
-    
-    // go to foreground
-    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
-    if ([[def objectForKey:kTrackingInForeground] boolValue] == YES) {
-        [lc startForegroundUpdating];
-    }
-}
-
+//
+//
+//- (void)applicationDidEnterBackground:(UIApplication *)application {
+//    LBLocationCenter *lc = [LBLocationCenter sharedLocationCenter];
+//    [lc stopForegroundUpdating];
+////    [lc saveData];
+//
+//    // go to background
+//    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+//    if ([[def objectForKey:kTrackingInBackground] boolValue] == YES) {
+//        [lc startBackgroundUpdating];
+//    }
+//}
+//
+//- (void)applicationWillEnterForeground:(UIApplication *)application {
+//    LBLocationCenter *lc = [LBLocationCenter sharedLocationCenter];
+//    [lc stopBackgroundUpdating];
+////    [lc saveData];
+//    
+//    // go to foreground
+//    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+//    if ([[def objectForKey:kTrackingInForeground] boolValue] == YES) {
+//        [lc startForegroundUpdating];
+//    }
+//}
+//
 - (void)applicationWillResignActive:(UIApplication *)application {
 }
 
@@ -101,7 +101,7 @@ willFinishLaunchingWithOptions:( NSDictionary *)launchOptions {
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    LBLocationCenter *lc = [LBLocationCenter sharedLocationCenter];
+//    LBLocationCenter *lc = [LBLocationCenter sharedLocationCenter];
 //    [lc saveData];
 }
 

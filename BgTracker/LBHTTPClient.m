@@ -61,24 +61,28 @@ static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f3
 
 - (void)initializeClientWithDelegate:(id<LBHTTPClientDelegate>)delegate
 {
+    self.delegate = delegate;
     if ([LBInstallation installationAvaliable]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.delegate HTTPClientDidInitializedWithInfo:nil];
         });
         return;
     }
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused"
+
     NSString *hardwareId = [[LBDeviceInfoManager sharedInstance] hardwareID];
     NSString *appid = [[LBDeviceInfoManager sharedInstance] appID];
     NSString *deviceType = @"ios";
     
     NSDictionary *param =   @{
-                              @"hardwareId":hardwareId,
-                              @"appid":appid,
-                              @"deviceType":deviceType
+                              @"hardwareId":@"abb235df333333555fsdfsg"/*hardwareId*/,
+                              @"appid":@"55603e35e4b07ae45cd1e581"/*appid*/,
+                              @"deviceType":@"android"/*deviceType*/
                               };
     
     [self queryInstallationWithDevitionInfo:param];
+#pragma clang diagnostic pop
 
 }
 

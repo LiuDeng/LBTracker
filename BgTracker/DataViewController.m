@@ -20,12 +20,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [LBTrackerInterface initalizeTrackerWithDelegate:self];
-    
-    // Do any additional setup after loading the view.
-    self.locationCenter = [LBLocationCenter sharedLocationCenter];
-    [self.locationCenter addDelegate:self];
+//    
+//    [LBTrackerInterface initalizeTrackerWithDelegate:self];
+//    
+//    // Do any additional setup after loading the view.
+//    self.locationCenter = [LBLocationCenter sharedLocationCenter];
+//    [self.locationCenter addDelegate:self];
 }
 
 - (void)trackerDidInitialized

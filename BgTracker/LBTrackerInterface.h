@@ -13,7 +13,7 @@
 - (void)trackerDidFaileToInitializeWithError:(NSError *)error;
 @end
 
-
+///对外接口类
 @interface LBTrackerInterface : NSObject
 
 + (LBTrackerInterface *)sharedInterface;

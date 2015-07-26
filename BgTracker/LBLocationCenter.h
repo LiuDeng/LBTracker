@@ -12,11 +12,15 @@
 
 extern NSString *const LBLocationCenterNewLocationAvaliableNotification;
 extern NSString *const LBLocationCenterNewLocationValueKey;
-
+extern NSString *const LBLocationCenterErrorDomain;
 @class LBLocationCenter;
 
 @protocol LBLocationCenterDelegate <NSObject>
 @optional
+
+- (void)locationCenter:(LBLocationCenter *)locationCenter didPreparedWithInfo:(NSDictionary *)info;
+- (void)locationCenter:(LBLocationCenter *)locationCenter didFailToPrepareWithError:(NSError *)error;
+
 - (void)locationCenter:(LBLocationCenter*)locationCenter didInsertRecordAtIndex:(NSUInteger)index;
 - (void)locationCenterDidClearAllData:(LBLocationCenter*)locationCenter;
 @end
@@ -25,7 +29,8 @@ extern NSString *const LBLocationCenterNewLocationValueKey;
 
 + (LBLocationCenter*)sharedLocationCenter;
 
-- (void)prepare;
+- (void)prepareWithDelegate:(id<LBLocationCenterDelegate>)delegate;
+
 - (void)startForegroundUpdating;
 - (void)stopForegroundUpdating;
 - (void)startBackgroundUpdating;
@@ -42,7 +47,7 @@ extern NSString *const LBLocationCenterNewLocationValueKey;
 
 @property (readonly) BOOL isReady;
 @property (readonly) BOOL isDataDirty;
-
+@property (nonatomic, weak) id<LBLocationCenterDelegate>delegate;
 @property (readonly) LBMonitoringType monitoringType;
 
 @property (readonly) NSArray *locationRecords;

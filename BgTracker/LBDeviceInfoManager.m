@@ -309,11 +309,13 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
         if (error == nil) {
             if ([[self.coreMotionData objectForKey:AccelerometerKey] count] < MAX_NUMBER) {
                 NSDictionary *dict = @{@"x":[NSNumber numberWithDouble:motion.userAcceleration.x],@"y":[NSNumber numberWithDouble:motion.userAcceleration.y],@"z":[NSNumber numberWithDouble:motion.userAcceleration.z]};
+                NSLog(@"acc: %@",dict);
                 [[self.coreMotionData objectForKey:AccelerometerKey] addObject:dict];
             }
             
             if ([[self.coreMotionData objectForKey:GravityKey] count] < MAX_NUMBER) {
                 NSDictionary *dict = @{@"x":[NSNumber numberWithDouble:motion.gravity.x],@"y":[NSNumber numberWithDouble:motion.gravity.y],@"z":[NSNumber numberWithDouble:motion.gravity.z]};
+                NSLog(@"grav: %@",dict);
                 [[self.coreMotionData objectForKey:GravityKey] addObject:dict];
             }
             
@@ -334,6 +336,7 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
         if (error == nil) {
             if ([[self.coreMotionData objectForKey:GyroscopeKey] count] < MAX_NUMBER) {
                 NSDictionary *dict = @{@"x":[NSNumber numberWithDouble:gyroData.rotationRate.x],@"y":[NSNumber numberWithDouble:gyroData.rotationRate.y],@"z":[NSNumber numberWithDouble:gyroData.rotationRate.z]};
+                NSLog(@"gyro: %@",dict);
                 [[self.coreMotionData objectForKey:GyroscopeKey] addObject:dict];
             }
         }
@@ -354,6 +357,7 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
         if (error == nil) {
             if ([[self.coreMotionData objectForKey:MagnetometerKey] count] < MAX_NUMBER) {
                 NSDictionary *dict = @{@"x":[NSNumber numberWithDouble:magnetometerData.magneticField.x],@"y":[NSNumber numberWithDouble:magnetometerData.magneticField.y],@"z":[NSNumber numberWithDouble:magnetometerData.magneticField.z]};
+                NSLog(@"magnet: %@",dict);
                 [[self.coreMotionData objectForKey:MagnetometerKey] addObject:dict];
             }
         }
