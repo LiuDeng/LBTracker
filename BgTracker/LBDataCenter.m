@@ -7,7 +7,8 @@
 //
 
 #import "LBDataCenter.h"
-#import "LBLRUMemoryCache.h"
+#import "LBLocationCenter.h"
+#import "LBDeviceInfoManager.h"
 #import "LBSenserRecord.h"
 #import "LBLocationRecord.h"
 #import "LBRecordStack.h"
@@ -24,18 +25,70 @@
 @property (nonatomic, strong) LBRecordStack *pendingLocations;
 @property (nonatomic, strong) LBRecordStack *pendingSensors;
 
+@property (nonatomic, strong) NSOperationQueue *queue;
+@property (nonatomic, strong) NSTimer *uploadTimer;
+@property (nonatomic, strong) NSTimer *sensorTimer;
+
+
 
 @end
 
 @implementation LBDataCenter
 
+
+
+#pragma mark - Init 
+
+
 IMP_SINGLETON;
 
++ (void)initializeDataCenter
+{
+    [[LBLocationCenter sharedLocationCenter] prepare];
+}
+
+- (void)startDataColletionWithTimeInterval:(NSTimeInterval)time
+{
+    if (self.uploadTimer) {
+        [self.uploadTimer invalidate];
+        self.uploadTimer = nil;
+    }
+    
+    [[LBLocationCenter sharedLocationCenter] startForegroundUpdating];
+    [[LBDeviceInfoManager sharedInstance] startCoreMotionMonitorClearData:YES];
+    // Fire data collection every 10min.
+    self.uploadTimer = [NSTimer scheduledTimerWithTimeInterval:time
+                                                        target:self
+                                                      selector:@selector(fireDataCollection)
+                                                      userInfo:nil
+                                                       repeats:YES];
+}
+
+- (void)stopDataCollection
+{
+    [self.uploadTimer invalidate];
+    [self.sensorTimer invalidate];
+}
 
 - (instancetype) init
 {
     if (self = [super init]) {
         [self loadDataToMemory];
+        _queue = [[NSOperationQueue alloc] init];
+        _queue.maxConcurrentOperationCount = 4;
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appDidEnterBackground:)
+                                                     name:UIApplicationDidEnterBackgroundNotification object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appWillEnterForeground:)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appWillTerminate:)
+                                                     name:UIApplicationWillTerminateNotification
+                                                   object:nil];
     }
     
     return self;
@@ -50,6 +103,22 @@ IMP_SINGLETON;
 {
     [self doesNotRecognizeSelector:_cmd];
 }
+
+- (void)fireDataCollection
+{
+    if (self.sensorTimer) {
+        [self.sensorTimer invalidate];
+        self.sensorTimer = nil;
+    }
+    [[LBDeviceInfoManager sharedInstance] startCoreMotionMonitorClearData:YES];
+    self.sensorTimer  = [NSTimer scheduledTimerWithTimeInterval:10
+                                                         target:self
+                                                       selector:@selector(fireDataUpload)
+                                                       userInfo:nil
+                                                        repeats:NO];
+    
+}
+
 
 
 #pragma mark - Location records 
@@ -128,6 +197,31 @@ IMP_SINGLETON;
 {
     return [[self.pendingSensors allRecords] copy];
 }
+
+#pragma mark - Notification
+
+- (void)appDidEnterBackground:(NSNotification *)note
+{
+    if (!([[LBLocationCenter sharedLocationCenter] monitoringType] & LBNotMonitoring)) {
+        [[LBLocationCenter sharedLocationCenter] stopForegroundUpdating];
+        [[LBLocationCenter sharedLocationCenter] startBackgroundUpdating];
+    }
+}
+
+- (void)appWillEnterForeground:(NSNotification *)note
+{
+    if (!([[LBLocationCenter sharedLocationCenter] monitoringType] & LBNotMonitoring)) {
+        [[LBLocationCenter sharedLocationCenter] stopBackgroundUpdating];
+        [[LBLocationCenter sharedLocationCenter] startForegroundUpdating];
+    }
+}
+
+- (void)appWillTerminate:(NSNotification *)note
+{
+    [[LBDataCenter sharedInstance] saveDataToDisk];
+}
+
+
 
 #pragma mark - Getter
 

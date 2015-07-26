@@ -9,11 +9,12 @@
 #import "LBHTTPClient.h"
 #import "LBRequstSerializer.h"
 #import "LBInstallation.h"
+#import "LBDeviceInfoManager.h"
 #import "LBLocationRecord.h"
 #import "LBSenserRecord.h"
 
 static NSString *const kLBSenzLeancloudHostURlString  = @"https://api.leancloud.cn";
-
+static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f306f4fc254cdc7becb73821a";
 
 typedef void(^LBHTTPClientUploadSuccessBlock)(id reponseObject, NSDictionary *info);
 typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
@@ -50,6 +51,59 @@ typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
     });
     return __sharedManager;
 }
+
+- (void)initializeClientWithDelegate:(id<LBHTTPClientDelegate>)delegate
+{
+    if ([LBInstallation installationAvaliable]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self.delegate trackerDidInitialized];
+        });
+        return;
+    }
+    
+    NSString *hardwareId = [[LBDeviceInfoManager sharedInstance] hardwareID];
+    NSString *appid = [[LBDeviceInfoManager sharedInstance] appID];
+    NSString *deviceType = @"ios";
+    
+    NSDictionary *param =   @{
+                              @"hardwareId":hardwareId,
+                              @"appid":appid,
+                              @"deviceType":deviceType
+                              };
+    
+    [self queryInstallationWithDevitionInfo:param];
+
+}
+
+#pragma mark - Create Installation ID 
+/// 仅首次安装时初始化Tracker时需要, 故直接写一个请求,不做封装.
+- (void)queryInstallationWithDevitionInfo:(NSDictionary *)param
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://api.trysenz.com/utils/exchanger/createInstallation"]];
+    [request setHTTPMethod:@"POST"];
+    [request setTimeoutInterval:30.0f];
+    [request setValue:kLBSenzAuthIDString forHTTPHeaderField:@"X-senz-Auth"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    
+    NSData *data = [NSJSONSerialization dataWithJSONObject:param options:NSJSONWritingPrettyPrinted error:NULL];
+    [request setHTTPBody:data];
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue currentQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+            if(!connectionError && [data length] > 0){
+                NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:NULL];
+                LBInstallation *installation = [[LBInstallation alloc] initWithDictionary:dict[@"result"]];
+                [installation saveToDisk];
+                if (self.delegate && [self.delegate respondsToSelector:@selector(trackerDidInitialized)]) {
+                    [self.delegate trackerDidInitialized];
+                }
+            }else{
+                NSLog(@"error : %@",connectionError);
+            }
+        }
+    }];
+}
+
 
 
 #pragma mark - Upload 

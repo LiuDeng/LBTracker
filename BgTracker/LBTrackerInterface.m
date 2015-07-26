@@ -8,19 +8,11 @@
 
 #import "LBTrackerInterface.h"
 #import "LBHTTPClient.h"
-#import "LBDeviceInfoManager.h"
-#import "LBInstallation.h"
 #import "LBDataCenter.h"
-#import "LBLocationCenter.h"
 
-static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f306f4fc254cdc7becb73821a";
 
-@interface LBTrackerInterface ()
 
-@property (nonatomic, strong) NSOperationQueue *queue;
-@property (nonatomic, strong) NSTimer *uploadTimer;
-@property (nonatomic, strong) NSTimer *sensorTimer;
-
+@interface LBTrackerInterface () <LBHTTPClientDelegate>
 @property (nonatomic, assign) BOOL started;
 @end
 
@@ -38,31 +30,6 @@ static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f3
 }
 
 
-- (instancetype)init
-{
-    if (self = [super init]) {
-        _queue = [[NSOperationQueue alloc] init];
-        _queue.maxConcurrentOperationCount = 4;
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(appDidEnterBackground:)
-                                                     name:UIApplicationDidEnterBackgroundNotification object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(appWillEnterForeground:)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(appWillTerminate:)
-                                                     name:UIApplicationWillTerminateNotification
-                                                   object:nil];
-        
-    }
-    
-    return self;
-}
-
-
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -77,30 +44,10 @@ static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f3
 
 - (void)initalizeTrackerWithDelegate:(id<LBTrackerDelegate>)delegate
 {
-    
-    [[LBLocationCenter sharedLocationCenter] prepare];
-    
-    self.delegate = delegate;
-    if ([LBInstallation installationAvaliable]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.delegate trackerDidInitialized];
-        });
-        return;
-    }
-    
-    NSString *hardwareId = [[LBDeviceInfoManager sharedInstance] hardwareID];
-    NSString *appid = [[LBDeviceInfoManager sharedInstance] appID];
-    NSString *deviceType = @"ios";
-    
-    NSDictionary *param =   @{
-                              @"hardwareId":hardwareId,
-                              @"appid":appid,
-                              @"deviceType":deviceType
-                              };
-    
-    [self queryInstallationWithDevitionInfo:param];
-
+    [LBDataCenter initializeDataCenter];
+    [[LBHTTPClient sharedClient] initializeClientWithDelegate:self];
 }
+
 
 + (void)initalizeTrackerWithDelegate:(id<LBTrackerDelegate>)delegate retryCount:(NSUInteger)count
 {
@@ -119,21 +66,21 @@ static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f3
     return [[self sharedInterface] startTrackerWithUploadTimeInterval:time];
 }
 
+
+/*启动Tracker,工作方式:
+    1. 开启一次定位数据采集,和传感器数据采集.采集到数据后停掉定位和传感器.等待定时器唤起下一次数据采集.
+    2. 每10分钟启动一次定位请求,同时启动一次连续10秒钟的传感器数据采集. 
+    3. 传感器数据采集时间结束 && 定位数据返回 ＝> 启动数据上传.
+ */
+
 - (BOOL)startTrackerWithUploadTimeInterval:(NSTimeInterval)time
 {
-    if (self.uploadTimer) {
-        [self.uploadTimer invalidate];
-        self.uploadTimer = nil;
+    if (self.started) {
+        return YES;
     }
-
-    [[LBLocationCenter sharedLocationCenter] startForegroundUpdating];
     
-    // Fire data collection every 10min.
-    self.uploadTimer = [NSTimer scheduledTimerWithTimeInterval:time
-                                                        target:self
-                                                      selector:@selector(fireDataCollection)
-                                                      userInfo:nil
-                                                       repeats:YES];
+    [[LBDataCenter sharedInstance] startDataColletionWithTimeInterval:time];
+    
     self.started = YES;
     return YES;
     
@@ -147,103 +94,30 @@ static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f3
 
 - (void)stopTracker
 {
-    [self.uploadTimer invalidate];
-    [self.sensorTimer invalidate];
+    [[LBDataCenter sharedInstance] stopDataCollection];
+    self.started = NO;
 }
 
 
 
-#pragma mark -
-- (void)fireDataCollection
-{
-    if (self.sensorTimer) {
-        [self.sensorTimer invalidate];
-        self.sensorTimer = nil;
-    }
-    [[LBDeviceInfoManager sharedInstance] startCoreMotionMonitorClearData:YES];
-    self.sensorTimer  = [NSTimer scheduledTimerWithTimeInterval:10
-                                                         target:self
-                                                       selector:@selector(fireDataUpload)
-                                                       userInfo:nil
-                                                        repeats:NO];
-    
-}
+#pragma mark - LBHTTPClientDelegate
 
-- (void)fireDataUpload
+- (void)HTTPClient:(LBHTTPClient *)client
+DidInitializedWithInfo:(NSDictionary *)info;
 {
-    LBLocationRecord *location = [[LBDataCenter sharedInstance] popLocationRecord];
-    [LBHTTPClient uploadLocationRecord:location
-                              onSuccess:^(id responseObject, NSDictionary *info) {
-                                  NSLog(@"location upload success.");
-                              }
-                              onFailure:^(NSError *error, NSDictionary *info) {
-                                  [[LBDataCenter sharedInstance] pushLocationRecord:location];
-                              }
-     ];
-    
-    NSArray *sensorArray = [[LBDataCenter sharedInstance] popSensorRecordsForCount:100];
-    [LBHTTPClient uploadSensorRecords:sensorArray
-                              onSuccess:^(id responseObject, NSDictionary *info) {
-                                  NSLog(@"sensor upload success");
-                              }
-                              onFailure:^(NSError *error, NSDictionary *info) {
-                                  for (LBSenserRecord *record in sensorArray) {
-                                      [[LBDataCenter sharedInstance] pushPendingSensorRecord:record];
-                                  }
-                              }
-     ];
-}
-#pragma mark - Notification
-
-- (void)appDidEnterBackground:(NSNotification *)note
-{
-    if (!([[LBLocationCenter sharedLocationCenter] monitoringType] & LBNotMonitoring)) {
-        [[LBLocationCenter sharedLocationCenter] stopForegroundUpdating];
-        [[LBLocationCenter sharedLocationCenter] startBackgroundUpdating];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(trackerDidInitialized)]) {
+        [self.delegate trackerDidInitialized];
     }
 }
 
-- (void)appWillEnterForeground:(NSNotification *)note
+- (void)HTTPClientDidFailToInitializeWithError:(NSError *)error;
 {
-    if (!([[LBLocationCenter sharedLocationCenter] monitoringType] & LBNotMonitoring)) {
-        [[LBLocationCenter sharedLocationCenter] stopBackgroundUpdating];
-        [[LBLocationCenter sharedLocationCenter] startForegroundUpdating];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(trackerDidFaileToInitializeWithError:)]) {
+        [self.delegate trackerDidFaileToInitializeWithError:error];
     }
 }
 
-- (void)appWillTerminate:(NSNotification *)note
-{
-    [[LBDataCenter sharedInstance] saveDataToDisk];
-}
 
-#pragma mark - Network
-
-- (void)queryInstallationWithDevitionInfo:(NSDictionary *)param
-{
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://api.trysenz.com/utils/exchanger/createInstallation"]];
-    [request setHTTPMethod:@"POST"];
-    [request setTimeoutInterval:30.0f];
-    [request setValue:kLBSenzAuthIDString forHTTPHeaderField:@"X-senz-Auth"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    
-    NSData *data = [NSJSONSerialization dataWithJSONObject:param options:NSJSONWritingPrettyPrinted error:NULL];
-    [request setHTTPBody:data];
-    
-    [NSURLConnection sendAsynchronousRequest:request queue:self.queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-            if(!connectionError && [data length] > 0){
-                NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:NULL];
-                LBInstallation *installation = [[LBInstallation alloc] initWithDictionary:dict[@"result"]];
-                [installation saveToDisk];
-                if (self.delegate && [self.delegate respondsToSelector:@selector(trackerDidInitialized)]) {
-                    [self.delegate trackerDidInitialized];
-                }
-            }else{
-                NSLog(@"error : %@",connectionError);
-            }
-        }
-    }];
-}
 
 
 

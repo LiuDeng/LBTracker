@@ -16,6 +16,12 @@
 
 DEF_SINGLETON;
 
+
++ (void)initializeDataCenter;
+
+- (void)startDataColletionWithTimeInterval:(NSTimeInterval)time;
+- (void)stopDataCollection;
+
 - (void)saveDataToDisk;
 
 - (void)loadDataToMemory;
