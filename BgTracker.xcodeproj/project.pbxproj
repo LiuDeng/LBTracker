@@ -1,0 +1,690 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		965C50EC1B64E58500808FF6 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 965C50EB1B64E58500808FF6 /* README.md */; };
+		967F8B1A1B61491F007AED5E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 967F8B191B61491F007AED5E /* LaunchScreen.xib */; };
+		967F8BB81B636358007AED5E /* LBLocationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BB31B636358007AED5E /* LBLocationCenter.m */; };
+		967F8BB91B636358007AED5E /* LBLocationRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BB51B636358007AED5E /* LBLocationRecord.m */; };
+		967F8BBA1B636358007AED5E /* LBWeakList.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BB71B636358007AED5E /* LBWeakList.m */; };
+		967F8BBE1B63655D007AED5E /* LBDataCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BBD1B63655D007AED5E /* LBDataCenter.m */; };
+		967F8BC41B636594007AED5E /* LBNetReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BC21B636594007AED5E /* LBNetReachability.m */; };
+		967F8BC51B636594007AED5E /* LBReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BC31B636594007AED5E /* LBReachability.m */; };
+		967F8BC91B6366D2007AED5E /* LBHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BC81B6366D2007AED5E /* LBHTTPClient.m */; };
+		967F8BD01B6377E0007AED5E /* LBRequstSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BCF1B6377E0007AED5E /* LBRequstSerializer.m */; };
+		967F8BD31B637CCC007AED5E /* LBInstallation.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BD21B637CCC007AED5E /* LBInstallation.m */; };
+		967F8BDC1B638FFC007AED5E /* LBDeviceInfoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BDB1B638FFC007AED5E /* LBDeviceInfoManager.m */; };
+		967F8BE01B63BA89007AED5E /* LBTrackerInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 967F8BDF1B63BA89007AED5E /* LBTrackerInterface.m */; };
+		96BC08CF1B64284C0040B0F1 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 96BC08CE1B64284C0040B0F1 /* libc++.dylib */; };
+		96BC08D21B6429280040B0F1 /* LBSenserRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BC08D11B6429280040B0F1 /* LBSenserRecord.m */; };
+		96C667BE1B641A6A00F468B5 /* LBTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C667BD1B641A6A00F468B5 /* LBTimer.m */; };
+		96E8D56B1B6496B300E80A64 /* LBLRUMemoryCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 96E8D56A1B6496B300E80A64 /* LBLRUMemoryCache.m */; };
+		96E8D56E1B64DAE600E80A64 /* LBRecordStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 96E8D56D1B64DAE600E80A64 /* LBRecordStack.m */; };
+		F097621D1B3294F500D31685 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F097621C1B3294F500D31685 /* main.m */; };
+		F09762201B3294F500D31685 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F097621F1B3294F500D31685 /* AppDelegate.m */; };
+		F09762291B3294F500D31685 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F09762271B3294F500D31685 /* Main.storyboard */; };
+		F097622B1B3294F500D31685 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F097622A1B3294F500D31685 /* Assets.xcassets */; };
+		F09762391B3294F500D31685 /* BgTrackerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F09762381B3294F500D31685 /* BgTrackerTests.m */; };
+		F09762531B329C1B00D31685 /* DataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F09762521B329C1B00D31685 /* DataViewController.m */; };
+		F09762551B329CA000D31685 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F09762541B329CA000D31685 /* CoreLocation.framework */; };
+		F0A568021B371CF500F98407 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A568011B371CF500F98407 /* MapKit.framework */; };
+		F0A568081B371F6100F98407 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A568071B371F6100F98407 /* MapViewController.m */; };
+		F0FFE9831B34220E00023DFE /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F0FFE9821B34220E00023DFE /* SettingsViewController.m */; };
+		F3C0E5660C9BB6CDF1C7B6B3 /* libPods-BgTracker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFCFABFCAB470A076EA2FEC7 /* libPods-BgTracker.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F09762351B3294F500D31685 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F09762101B3294F500D31685 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F09762171B3294F500D31685;
+			remoteInfo = BgTracker;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		889D34D702365263E8673754 /* Pods-BgTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BgTracker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BgTracker/Pods-BgTracker.debug.xcconfig"; sourceTree = "<group>"; };
+		965C50EB1B64E58500808FF6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = BgTracker/README.md; sourceTree = "<group>"; };
+		967F8B191B61491F007AED5E /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
+		967F8BB21B636358007AED5E /* LBLocationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBLocationCenter.h; sourceTree = "<group>"; };
+		967F8BB31B636358007AED5E /* LBLocationCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBLocationCenter.m; sourceTree = "<group>"; };
+		967F8BB41B636358007AED5E /* LBLocationRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBLocationRecord.h; sourceTree = "<group>"; };
+		967F8BB51B636358007AED5E /* LBLocationRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBLocationRecord.m; sourceTree = "<group>"; };
+		967F8BB61B636358007AED5E /* LBWeakList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBWeakList.h; sourceTree = "<group>"; };
+		967F8BB71B636358007AED5E /* LBWeakList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBWeakList.m; sourceTree = "<group>"; };
+		967F8BBC1B63655D007AED5E /* LBDataCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBDataCenter.h; sourceTree = "<group>"; };
+		967F8BBD1B63655D007AED5E /* LBDataCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBDataCenter.m; sourceTree = "<group>"; };
+		967F8BC01B636587007AED5E /* LBReachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LBReachability.h; sourceTree = "<group>"; };
+		967F8BC11B636594007AED5E /* LBNetReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBNetReachability.h; sourceTree = "<group>"; };
+		967F8BC21B636594007AED5E /* LBNetReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBNetReachability.m; sourceTree = "<group>"; };
+		967F8BC31B636594007AED5E /* LBReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBReachability.m; sourceTree = "<group>"; };
+		967F8BC71B6366D2007AED5E /* LBHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBHTTPClient.h; sourceTree = "<group>"; };
+		967F8BC81B6366D2007AED5E /* LBHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBHTTPClient.m; sourceTree = "<group>"; };
+		967F8BCE1B6377E0007AED5E /* LBRequstSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBRequstSerializer.h; sourceTree = "<group>"; };
+		967F8BCF1B6377E0007AED5E /* LBRequstSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBRequstSerializer.m; sourceTree = "<group>"; };
+		967F8BD11B637CCC007AED5E /* LBInstallation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBInstallation.h; sourceTree = "<group>"; };
+		967F8BD21B637CCC007AED5E /* LBInstallation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBInstallation.m; sourceTree = "<group>"; };
+		967F8BDA1B638FFC007AED5E /* LBDeviceInfoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBDeviceInfoManager.h; sourceTree = "<group>"; };
+		967F8BDB1B638FFC007AED5E /* LBDeviceInfoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBDeviceInfoManager.m; sourceTree = "<group>"; };
+		967F8BDE1B63BA89007AED5E /* LBTrackerInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBTrackerInterface.h; sourceTree = "<group>"; };
+		967F8BDF1B63BA89007AED5E /* LBTrackerInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBTrackerInterface.m; sourceTree = "<group>"; };
+		967F8BE21B63E5E2007AED5E /* LBSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LBSingleton.h; sourceTree = "<group>"; };
+		96BC08CE1B64284C0040B0F1 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		96BC08D01B6429280040B0F1 /* LBSenserRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBSenserRecord.h; sourceTree = "<group>"; };
+		96BC08D11B6429280040B0F1 /* LBSenserRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBSenserRecord.m; sourceTree = "<group>"; };
+		96C667BC1B641A6A00F468B5 /* LBTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBTimer.h; sourceTree = "<group>"; };
+		96C667BD1B641A6A00F468B5 /* LBTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBTimer.m; sourceTree = "<group>"; };
+		96E8D5691B6496B300E80A64 /* LBLRUMemoryCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBLRUMemoryCache.h; sourceTree = "<group>"; };
+		96E8D56A1B6496B300E80A64 /* LBLRUMemoryCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBLRUMemoryCache.m; sourceTree = "<group>"; };
+		96E8D56C1B64DAE600E80A64 /* LBRecordStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBRecordStack.h; sourceTree = "<group>"; };
+		96E8D56D1B64DAE600E80A64 /* LBRecordStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBRecordStack.m; sourceTree = "<group>"; };
+		BFCFABFCAB470A076EA2FEC7 /* libPods-BgTracker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BgTracker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E391E318C711CE5B938D996D /* Pods-BgTracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BgTracker.release.xcconfig"; path = "Pods/Target Support Files/Pods-BgTracker/Pods-BgTracker.release.xcconfig"; sourceTree = "<group>"; };
+		F09762181B3294F500D31685 /* BgTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BgTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F097621C1B3294F500D31685 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		F097621E1B3294F500D31685 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		F097621F1B3294F500D31685 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		F09762281B3294F500D31685 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		F097622A1B3294F500D31685 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F097622F1B3294F500D31685 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F09762341B3294F500D31685 /* BgTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BgTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F09762381B3294F500D31685 /* BgTrackerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BgTrackerTests.m; sourceTree = "<group>"; };
+		F097623A1B3294F500D31685 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F09762511B329C1B00D31685 /* DataViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataViewController.h; sourceTree = "<group>"; };
+		F09762521B329C1B00D31685 /* DataViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataViewController.m; sourceTree = "<group>"; };
+		F09762541B329CA000D31685 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		F0A568011B371CF500F98407 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		F0A568061B371F6100F98407 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
+		F0A568071B371F6100F98407 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
+		F0FFE9811B34220E00023DFE /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		F0FFE9821B34220E00023DFE /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		F0FFE9841B34223900023DFE /* SettingsKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsKeys.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F09762151B3294F500D31685 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96BC08CF1B64284C0040B0F1 /* libc++.dylib in Frameworks */,
+				F0A568021B371CF500F98407 /* MapKit.framework in Frameworks */,
+				F09762551B329CA000D31685 /* CoreLocation.framework in Frameworks */,
+				F3C0E5660C9BB6CDF1C7B6B3 /* libPods-BgTracker.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F09762311B3294F500D31685 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0621C58269654368EC18049E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				96BC08CE1B64284C0040B0F1 /* libc++.dylib */,
+				BFCFABFCAB470A076EA2FEC7 /* libPods-BgTracker.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		965C50EA1B64E54000808FF6 /* SDK */ = {
+			isa = PBXGroup;
+			children = (
+				967F8BE11B63BA8E007AED5E /* Interface */,
+				967F8BCA1B63694F007AED5E /* Network */,
+				967F8BBF1B636563007AED5E /* Data */,
+				967F8BD41B637D9B007AED5E /* Model */,
+				96C667BB1B63FD3A00F468B5 /* Ultis */,
+			);
+			name = SDK;
+			sourceTree = "<group>";
+		};
+		967F8BBB1B636367007AED5E /* Localtion */ = {
+			isa = PBXGroup;
+			children = (
+				967F8BB21B636358007AED5E /* LBLocationCenter.h */,
+				967F8BB31B636358007AED5E /* LBLocationCenter.m */,
+			);
+			name = Localtion;
+			sourceTree = "<group>";
+		};
+		967F8BBF1B636563007AED5E /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				967F8BBC1B63655D007AED5E /* LBDataCenter.h */,
+				967F8BBD1B63655D007AED5E /* LBDataCenter.m */,
+				967F8BDD1B639093007AED5E /* DataCollection */,
+			);
+			name = Data;
+			sourceTree = "<group>";
+		};
+		967F8BC61B63659C007AED5E /* Reachability */ = {
+			isa = PBXGroup;
+			children = (
+				967F8BC01B636587007AED5E /* LBReachability.h */,
+				967F8BC31B636594007AED5E /* LBReachability.m */,
+				967F8BC11B636594007AED5E /* LBNetReachability.h */,
+				967F8BC21B636594007AED5E /* LBNetReachability.m */,
+			);
+			name = Reachability;
+			sourceTree = "<group>";
+		};
+		967F8BCA1B63694F007AED5E /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				967F8BC71B6366D2007AED5E /* LBHTTPClient.h */,
+				967F8BC81B6366D2007AED5E /* LBHTTPClient.m */,
+				967F8BD51B637DA7007AED5E /* Serializer */,
+				967F8BC61B63659C007AED5E /* Reachability */,
+			);
+			name = Network;
+			sourceTree = "<group>";
+		};
+		967F8BD41B637D9B007AED5E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				967F8BB41B636358007AED5E /* LBLocationRecord.h */,
+				967F8BB51B636358007AED5E /* LBLocationRecord.m */,
+				96BC08D01B6429280040B0F1 /* LBSenserRecord.h */,
+				96BC08D11B6429280040B0F1 /* LBSenserRecord.m */,
+				967F8BD11B637CCC007AED5E /* LBInstallation.h */,
+				967F8BD21B637CCC007AED5E /* LBInstallation.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		967F8BD51B637DA7007AED5E /* Serializer */ = {
+			isa = PBXGroup;
+			children = (
+				967F8BCE1B6377E0007AED5E /* LBRequstSerializer.h */,
+				967F8BCF1B6377E0007AED5E /* LBRequstSerializer.m */,
+			);
+			name = Serializer;
+			sourceTree = "<group>";
+		};
+		967F8BDD1B639093007AED5E /* DataCollection */ = {
+			isa = PBXGroup;
+			children = (
+				967F8BBB1B636367007AED5E /* Localtion */,
+				96C667BA1B63FD1400F468B5 /* Sensor&DeviceInfo */,
+			);
+			name = DataCollection;
+			sourceTree = "<group>";
+		};
+		967F8BE11B63BA8E007AED5E /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				967F8BDE1B63BA89007AED5E /* LBTrackerInterface.h */,
+				967F8BDF1B63BA89007AED5E /* LBTrackerInterface.m */,
+			);
+			name = Interface;
+			sourceTree = "<group>";
+		};
+		96C667BA1B63FD1400F468B5 /* Sensor&DeviceInfo */ = {
+			isa = PBXGroup;
+			children = (
+				967F8BDA1B638FFC007AED5E /* LBDeviceInfoManager.h */,
+				967F8BDB1B638FFC007AED5E /* LBDeviceInfoManager.m */,
+			);
+			name = "Sensor&DeviceInfo";
+			sourceTree = "<group>";
+		};
+		96C667BB1B63FD3A00F468B5 /* Ultis */ = {
+			isa = PBXGroup;
+			children = (
+				96E8D56C1B64DAE600E80A64 /* LBRecordStack.h */,
+				96E8D56D1B64DAE600E80A64 /* LBRecordStack.m */,
+				967F8BB61B636358007AED5E /* LBWeakList.h */,
+				967F8BB71B636358007AED5E /* LBWeakList.m */,
+				96E8D5691B6496B300E80A64 /* LBLRUMemoryCache.h */,
+				96E8D56A1B6496B300E80A64 /* LBLRUMemoryCache.m */,
+				96C667BC1B641A6A00F468B5 /* LBTimer.h */,
+				96C667BD1B641A6A00F468B5 /* LBTimer.m */,
+				967F8BE21B63E5E2007AED5E /* LBSingleton.h */,
+			);
+			name = Ultis;
+			sourceTree = "<group>";
+		};
+		96C8ED8665DD263C34DF0EC8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				889D34D702365263E8673754 /* Pods-BgTracker.debug.xcconfig */,
+				E391E318C711CE5B938D996D /* Pods-BgTracker.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		F097620F1B3294F500D31685 = {
+			isa = PBXGroup;
+			children = (
+				965C50EB1B64E58500808FF6 /* README.md */,
+				F097621A1B3294F500D31685 /* BgTracker */,
+				F09762371B3294F500D31685 /* BgTrackerTests */,
+				F09762191B3294F500D31685 /* Products */,
+				F09762541B329CA000D31685 /* CoreLocation.framework */,
+				F0A568011B371CF500F98407 /* MapKit.framework */,
+				96C8ED8665DD263C34DF0EC8 /* Pods */,
+				0621C58269654368EC18049E /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		F09762191B3294F500D31685 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F09762181B3294F500D31685 /* BgTracker.app */,
+				F09762341B3294F500D31685 /* BgTrackerTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F097621A1B3294F500D31685 /* BgTracker */ = {
+			isa = PBXGroup;
+			children = (
+				F097621E1B3294F500D31685 /* AppDelegate.h */,
+				F097621F1B3294F500D31685 /* AppDelegate.m */,
+				F09762511B329C1B00D31685 /* DataViewController.h */,
+				F09762521B329C1B00D31685 /* DataViewController.m */,
+				F0A568061B371F6100F98407 /* MapViewController.h */,
+				F0A568071B371F6100F98407 /* MapViewController.m */,
+				F0FFE9841B34223900023DFE /* SettingsKeys.h */,
+				F0FFE9811B34220E00023DFE /* SettingsViewController.h */,
+				F0FFE9821B34220E00023DFE /* SettingsViewController.m */,
+				965C50EA1B64E54000808FF6 /* SDK */,
+				F097622A1B3294F500D31685 /* Assets.xcassets */,
+				F097622F1B3294F500D31685 /* Info.plist */,
+				F097621B1B3294F500D31685 /* Supporting Files */,
+			);
+			path = BgTracker;
+			sourceTree = "<group>";
+		};
+		F097621B1B3294F500D31685 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F09762271B3294F500D31685 /* Main.storyboard */,
+				967F8B191B61491F007AED5E /* LaunchScreen.xib */,
+				F097621C1B3294F500D31685 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F09762371B3294F500D31685 /* BgTrackerTests */ = {
+			isa = PBXGroup;
+			children = (
+				F09762381B3294F500D31685 /* BgTrackerTests.m */,
+				F097623A1B3294F500D31685 /* Info.plist */,
+			);
+			path = BgTrackerTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F09762171B3294F500D31685 /* BgTracker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F09762481B3294F500D31685 /* Build configuration list for PBXNativeTarget "BgTracker" */;
+			buildPhases = (
+				F668632CEDFBFAF2D7623E8F /* Check Pods Manifest.lock */,
+				F09762141B3294F500D31685 /* Sources */,
+				F09762151B3294F500D31685 /* Frameworks */,
+				F09762161B3294F500D31685 /* Resources */,
+				2B38B0F1EB2A242F7E96D13B /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BgTracker;
+			productName = BgTracker;
+			productReference = F09762181B3294F500D31685 /* BgTracker.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F09762331B3294F500D31685 /* BgTrackerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F097624B1B3294F500D31685 /* Build configuration list for PBXNativeTarget "BgTrackerTests" */;
+			buildPhases = (
+				F09762301B3294F500D31685 /* Sources */,
+				F09762311B3294F500D31685 /* Frameworks */,
+				F09762321B3294F500D31685 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F09762361B3294F500D31685 /* PBXTargetDependency */,
+			);
+			name = BgTrackerTests;
+			productName = BgTrackerTests;
+			productReference = F09762341B3294F500D31685 /* BgTrackerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F09762101B3294F500D31685 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "Gong Zhang";
+				TargetAttributes = {
+					F09762171B3294F500D31685 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+					F09762331B3294F500D31685 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = F09762171B3294F500D31685;
+					};
+				};
+			};
+			buildConfigurationList = F09762131B3294F500D31685 /* Build configuration list for PBXProject "BgTracker" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F097620F1B3294F500D31685;
+			productRefGroup = F09762191B3294F500D31685 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F09762171B3294F500D31685 /* BgTracker */,
+				F09762331B3294F500D31685 /* BgTrackerTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F09762161B3294F500D31685 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				967F8B1A1B61491F007AED5E /* LaunchScreen.xib in Resources */,
+				F097622B1B3294F500D31685 /* Assets.xcassets in Resources */,
+				F09762291B3294F500D31685 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F09762321B3294F500D31685 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2B38B0F1EB2A242F7E96D13B /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BgTracker/Pods-BgTracker-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F668632CEDFBFAF2D7623E8F /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F09762141B3294F500D31685 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				967F8BC41B636594007AED5E /* LBNetReachability.m in Sources */,
+				96E8D56E1B64DAE600E80A64 /* LBRecordStack.m in Sources */,
+				F09762201B3294F500D31685 /* AppDelegate.m in Sources */,
+				965C50EC1B64E58500808FF6 /* README.md in Sources */,
+				F09762531B329C1B00D31685 /* DataViewController.m in Sources */,
+				F0A568081B371F6100F98407 /* MapViewController.m in Sources */,
+				967F8BB91B636358007AED5E /* LBLocationRecord.m in Sources */,
+				967F8BD31B637CCC007AED5E /* LBInstallation.m in Sources */,
+				967F8BBE1B63655D007AED5E /* LBDataCenter.m in Sources */,
+				967F8BC91B6366D2007AED5E /* LBHTTPClient.m in Sources */,
+				F097621D1B3294F500D31685 /* main.m in Sources */,
+				96E8D56B1B6496B300E80A64 /* LBLRUMemoryCache.m in Sources */,
+				967F8BB81B636358007AED5E /* LBLocationCenter.m in Sources */,
+				96BC08D21B6429280040B0F1 /* LBSenserRecord.m in Sources */,
+				967F8BDC1B638FFC007AED5E /* LBDeviceInfoManager.m in Sources */,
+				967F8BE01B63BA89007AED5E /* LBTrackerInterface.m in Sources */,
+				967F8BBA1B636358007AED5E /* LBWeakList.m in Sources */,
+				96C667BE1B641A6A00F468B5 /* LBTimer.m in Sources */,
+				967F8BD01B6377E0007AED5E /* LBRequstSerializer.m in Sources */,
+				967F8BC51B636594007AED5E /* LBReachability.m in Sources */,
+				F0FFE9831B34220E00023DFE /* SettingsViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F09762301B3294F500D31685 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F09762391B3294F500D31685 /* BgTrackerTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F09762361B3294F500D31685 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F09762171B3294F500D31685 /* BgTracker */;
+			targetProxy = F09762351B3294F500D31685 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F09762271B3294F500D31685 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F09762281B3294F500D31685 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F09762461B3294F500D31685 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		F09762471B3294F500D31685 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F09762491B3294F500D31685 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 889D34D702365263E8673754 /* Pods-BgTracker.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/BgTracker",
+				);
+				INFOPLIST_FILE = BgTracker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = co.gongzh.BgTracker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		F097624A1B3294F500D31685 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E391E318C711CE5B938D996D /* Pods-BgTracker.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/BgTracker",
+				);
+				INFOPLIST_FILE = BgTracker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = co.gongzh.BgTracker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		F097624C1B3294F500D31685 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = BgTrackerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = co.gongzh.BgTrackerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BgTracker.app/BgTracker";
+			};
+			name = Debug;
+		};
+		F097624D1B3294F500D31685 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = BgTrackerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = co.gongzh.BgTrackerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BgTracker.app/BgTracker";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F09762131B3294F500D31685 /* Build configuration list for PBXProject "BgTracker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F09762461B3294F500D31685 /* Debug */,
+				F09762471B3294F500D31685 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F09762481B3294F500D31685 /* Build configuration list for PBXNativeTarget "BgTracker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F09762491B3294F500D31685 /* Debug */,
+				F097624A1B3294F500D31685 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F097624B1B3294F500D31685 /* Build configuration list for PBXNativeTarget "BgTrackerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F097624C1B3294F500D31685 /* Debug */,
+				F097624D1B3294F500D31685 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F09762101B3294F500D31685 /* Project object */;
+}
