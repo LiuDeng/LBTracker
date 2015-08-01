@@ -20,7 +20,7 @@
 
 @property (nonatomic, weak) id<LBTrackerDelegate> delegate;
 
-+ (void)initalizeTrackerWithDelegate:(id<LBTrackerDelegate>)delegate;
++ (void)initalizeTrackerWithDelegate:(id<LBTrackerDelegate>)delegate appID:(NSString *)appID;
 
 /// Use default upload time interval = 10*60
 + (BOOL)startTracker;

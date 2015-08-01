@@ -7,7 +7,8 @@
 //
 
 #import "LBLocationTracker.h"
-
+#import "LBHTTPClient.h"
+#import "LBLocationRecord.h"
 #define LATITUDE @"latitude"
 #define LONGITUDE @"longitude"
 #define ACCURACY @"theAccuracy"
@@ -31,9 +32,9 @@
 - (id)init {
 	if (self==[super init]) {
         //Get the share model and also initialize myLocationArray
-        self.shareModel = [LBLocationShareModel sharedModel];
-        self.shareModel.myLocationArray = [[NSMutableArray alloc]init];
-        
+        self.scheduler = [LBDataCollectionScheduler sharedInstance];
+        self.scheduler.myLocationArray = [[NSMutableArray alloc]init];
+        self.dataColletionInterval = 1*60;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
 	}
 	return self;
@@ -51,17 +52,17 @@
     [locationManager startUpdatingLocation];
     
     //Use the BackgroundTaskManager to manage all the background Task
-    self.shareModel.bgTask = [LBBackgroundTaskManager sharedBackgroundTaskManager];
-    [self.shareModel.bgTask beginNewBackgroundTask];
+    self.scheduler.bgTask = [LBBackgroundTaskManager sharedBackgroundTaskManager];
+    [self.scheduler.bgTask beginNewBackgroundTask];
 }
 
 - (void) restartLocationUpdates
 {
     NSLog(@"restartLocationUpdates");
     
-    if (self.shareModel.timer) {
-        [self.shareModel.timer invalidate];
-        self.shareModel.timer = nil;
+    if (self.scheduler.locationTimer) {
+        [self.scheduler.locationTimer invalidate];
+        self.scheduler.locationTimer = nil;
     }
     
     CLLocationManager *locationManager = [LBLocationTracker sharedLocationManager];
@@ -75,6 +76,13 @@
     [locationManager startUpdatingLocation];
 }
 
+
+
+- (void)startLocationTrackingWithTimeInterval:(NSTimeInterval)time
+{
+    self.dataColletionInterval = MAX(10, time);
+    [self startLocationTracking];
+}
 
 - (void)startLocationTracking {
     NSLog(@"startLocationTracking");
@@ -107,9 +115,9 @@
 - (void)stopLocationTracking {
     NSLog(@"stopLocationTracking");
     
-    if (self.shareModel.timer) {
-        [self.shareModel.timer invalidate];
-        self.shareModel.timer = nil;
+    if (self.scheduler.locationTimer) {
+        [self.scheduler.locationTimer invalidate];
+        self.scheduler.locationTimer = nil;
     }
     
 	CLLocationManager *locationManager = [LBLocationTracker sharedLocationManager];
@@ -149,32 +157,32 @@
             
             //Add the vallid location with good accuracy into an array
             //Every 1 minute, I will select the best location based on accuracy and send to server
-            [self.shareModel.myLocationArray addObject:dict];
+            [self.scheduler.myLocationArray addObject:dict];
         }
     }
     
     //If the timer still valid, return it (Will not run the code below)
-    if (self.shareModel.timer) {
+    if (self.scheduler.locationTimer) {
         return;
     }
     
-    self.shareModel.bgTask = [LBBackgroundTaskManager sharedBackgroundTaskManager];
-    [self.shareModel.bgTask beginNewBackgroundTask];
+    self.scheduler.bgTask = [LBBackgroundTaskManager sharedBackgroundTaskManager];
+    [self.scheduler.bgTask beginNewBackgroundTask];
     
-    //Restart the locationMaanger after 1 minute
-    self.shareModel.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self
+    //Restart the locationMaanger after X minute
+    self.scheduler.locationTimer = [NSTimer scheduledTimerWithTimeInterval:self.dataColletionInterval target:self
                                                            selector:@selector(restartLocationUpdates)
                                                            userInfo:nil
                                                             repeats:NO];
     
     //Will only stop the locationManager after 10 seconds, so that we can get some accurate locations
     //The location manager will only operate for 10 seconds to save battery
-    if (self.shareModel.delay10Seconds) {
-        [self.shareModel.delay10Seconds invalidate];
-        self.shareModel.delay10Seconds = nil;
+    if (self.scheduler.delay10Seconds) {
+        [self.scheduler.delay10Seconds invalidate];
+        self.scheduler.delay10Seconds = nil;
     }
     
-    self.shareModel.delay10Seconds = [NSTimer scheduledTimerWithTimeInterval:10 target:self
+    self.scheduler.delay10Seconds = [NSTimer scheduledTimerWithTimeInterval:10 target:self
                                                     selector:@selector(stopLocationDelayBy10Seconds)
                                                     userInfo:nil
                                                      repeats:NO];
@@ -217,16 +225,23 @@
 }
 
 
+@end
+
+
+
+
+@implementation LBLocationTracker (Network)
+
 //Send the location to Server
-- (void)updateLocationToServer {
+- (void)uploadLocationToServer {
     
     NSLog(@"updateLocationToServer");
     
     // Find the best location from the array based on accuracy
     NSMutableDictionary * myBestLocation = [[NSMutableDictionary alloc]init];
     
-    for(int i=0;i<self.shareModel.myLocationArray.count;i++){
-        NSMutableDictionary * currentLocation = [self.shareModel.myLocationArray objectAtIndex:i];
+    for(int i=0;i<self.scheduler.myLocationArray.count;i++){
+        NSMutableDictionary * currentLocation = [self.scheduler.myLocationArray objectAtIndex:i];
         
         if(i==0)
             myBestLocation = currentLocation;
@@ -240,10 +255,10 @@
     
     //If the array is 0, get the last location
     //Sometimes due to network issue or unknown reason, you could not get the location during that  period, the best you can do is sending the last known location to the server
-    if(self.shareModel.myLocationArray.count==0)
+    if(self.scheduler.myLocationArray.count==0)
     {
         NSLog(@"Unable to get location, use the last known location");
-
+        
         self.myLocation=self.myLastLocation;
         self.myLocationAccuracy=self.myLastLocationAccuracy;
         
@@ -257,15 +272,21 @@
     
     NSLog(@"Send to Server: Latitude(%f) Longitude(%f) Accuracy(%f)",self.myLocation.latitude, self.myLocation.longitude,self.myLocationAccuracy);
     
-    //TODO: Your code to send the self.myLocation and self.myLocationAccuracy to your server
+    
+    LBLocationRecord *recordToUpload = [[LBLocationRecord alloc] initWithCLCoordinate2D:CLLocationCoordinate2DMake(self.myLocation.latitude, self.myLocation.longitude) monitoringType:LBForegroundMonitoring];
+    
+    [LBHTTPClient uploadLocationRecord:recordToUpload onSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"success");
+    } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        // TODO: save to pending
+        NSLog(@"failed ");
+    }];
     
     //After sending the location to the server successful, remember to clear the current array with the following code. It is to make sure that you clear up old location in the array and add the new locations from locationManager
-    [self.shareModel.myLocationArray removeAllObjects];
-    self.shareModel.myLocationArray = nil;
-    self.shareModel.myLocationArray = [[NSMutableArray alloc]init];
+    [self.scheduler.myLocationArray removeAllObjects];
+    self.scheduler.myLocationArray = nil;
+    self.scheduler.myLocationArray = [[NSMutableArray alloc]init];
 }
-
-
 
 
 @end

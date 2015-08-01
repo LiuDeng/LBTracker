@@ -7,17 +7,15 @@
 //
 
 #import "LBLocationRecord.h"
-#import "LBLocationCenter.h"
 #import <CoreLocation/CoreLocation.h>
 
 @interface LBLocationRecord ()
 
 @property (nonatomic, assign) CLLocationCoordinate2D coordinate;
-
 @end
 
+
 @implementation LBLocationRecord {
-    CLLocationCoordinate2D _coordinate;
 }
 
 - (instancetype)init {
@@ -106,8 +104,8 @@
 - (NSDictionary *)JSONRepresentation
 {
     return @{@"__type":@"GeoPoint",
-                           @"latitude":@(self.latitude),
-                           @"longitude":@(self.longitude)};
+                           @"latitude":@(self.coordinate.latitude),
+                           @"longitude":@(self.coordinate.longitude)};
 }
 
 

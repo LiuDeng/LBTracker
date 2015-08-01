@@ -17,7 +17,7 @@
 - (instancetype)init;
 - (NSDictionary *)JSONRepresentation;
 
-@property (nonatomic, assign) NSTimeInterval timestamp;
+@property (nonatomic, assign) NSTimeInterval timestamp;  // in ms
 @property (nonatomic, copy  ) NSString *senserName;
 @property (nonatomic, strong) NSNumber *accuracy;
 @property (nonatomic, strong) NSArray  *values;

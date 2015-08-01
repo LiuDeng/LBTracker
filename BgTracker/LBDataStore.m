@@ -35,6 +35,10 @@
 {
     if (self = [super init]) {
         [self loadDataToMemory];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appWillTerminate:)
+                                                     name:UIApplicationWillTerminateNotification
+                                                   object:nil];
     }
     
     return self;
@@ -57,6 +61,12 @@
     self.pendingLocations = [NSKeyedUnarchiver unarchiveObjectWithFile:self.locationDatafilePath];
     self.pendingSensors  = [NSKeyedUnarchiver unarchiveObjectWithFile:self.sensorDatafilePath];
     
+}
+
+
+- (void)appWillTerminate:(NSNotification *)note
+{
+    [self saveDataToDisk];
 }
 
 

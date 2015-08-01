@@ -20,6 +20,8 @@
 #import <arpa/inet.h>
 #import <net/if.h>
 #import <UIKit/UIKit.h>
+#import "LBHTTPClient.h"
+#import "LBSenserRecord.h"
 
 #define IOS_CELLULAR    @"pdp_ip0"
 #define IOS_WIFI        @"en0"
@@ -63,6 +65,10 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
 
 @property(nonatomic,strong) CMMotionManager *motionManager;
 @property(nonatomic,strong) CTTelephonyNetworkInfo *networkInfo;
+@property(nonatomic,assign) BOOL accReady;
+@property(nonatomic,assign) BOOL gyroReady;
+@property(nonatomic,assign) BOOL gravReady;
+@property(nonatomic,assign) BOOL magReady;
 
 @end
 
@@ -85,7 +91,7 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
         
         _apdidUpdateQueue = dispatch_queue_create(NULL, NULL);
         _condition = [[NSCondition alloc] init];
-        
+        _scheduler = [LBDataCollectionScheduler sharedInstance];
         _isUmidTokenInitGettingFinished = NO;
         _isPerformingUmidTokenInit = NO;
         
@@ -109,12 +115,12 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
     return [self uuid];
 }
 
--( NSString *)appID
+-( NSString *)bundleID
 {
-    if (!_appID) {
-        _appID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
+    if (!_bundleID) {
+        _bundleID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
     }
-    return _appID;
+    return _bundleID;
 }
 
 
@@ -128,6 +134,7 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
             uuid = [[NSUUID UUID] UUIDString];
             [[NSUserDefaults  standardUserDefaults] setObject:uuid forKey:kLBTackerUUIDKey];
             [[NSUserDefaults  standardUserDefaults] synchronize];
+//            uuid = [APMD5 calculateDigestFromString:uuid];
             _uuid = uuid;
         }
     }
@@ -265,8 +272,12 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
     return nil;
 }
 
-
 - (void)startCoreMotionMonitorClearData:(BOOL)clear {
+    
+    
+    if (([UIApplication sharedApplication].applicationState == UIApplicationStateBackground)) {
+        [self.scheduler.bgTask beginNewBackgroundTask];
+    }
     
     if (clear) {
         self.coreMotionData = [NSMutableDictionary dictionary];
@@ -288,8 +299,15 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
     [self startMagnetometerUpdate];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appResignActiveAction:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appTerminateAction:) name:UIApplicationWillTerminateNotification object:nil];
+}
+
+
+- (void)appEnterBackground:(NSNotification *)notify
+{
+    [self startCoreMotionMonitorClearData:NO];
 }
 
 - (void)appResignActiveAction:(NSNotification *)notify {
@@ -308,20 +326,20 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
     [self.motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue currentQueue] withHandler:^(CMDeviceMotion *motion, NSError *error) {
         if (error == nil) {
             if ([[self.coreMotionData objectForKey:AccelerometerKey] count] < MAX_NUMBER) {
-                NSDictionary *dict = @{@"x":[NSNumber numberWithDouble:motion.userAcceleration.x],@"y":[NSNumber numberWithDouble:motion.userAcceleration.y],@"z":[NSNumber numberWithDouble:motion.userAcceleration.z]};
-                NSLog(@"acc: %@",dict);
-                [[self.coreMotionData objectForKey:AccelerometerKey] addObject:dict];
+                NSLog(@"acc: %@",@{@"x":[NSNumber numberWithDouble:motion.userAcceleration.x],@"y":[NSNumber numberWithDouble:motion.userAcceleration.y],@"z":[NSNumber numberWithDouble:motion.userAcceleration.z]});
+                [[self.coreMotionData objectForKey:AccelerometerKey] addObject:motion];
             }
             
             if ([[self.coreMotionData objectForKey:GravityKey] count] < MAX_NUMBER) {
-                NSDictionary *dict = @{@"x":[NSNumber numberWithDouble:motion.gravity.x],@"y":[NSNumber numberWithDouble:motion.gravity.y],@"z":[NSNumber numberWithDouble:motion.gravity.z]};
-                NSLog(@"grav: %@",dict);
-                [[self.coreMotionData objectForKey:GravityKey] addObject:dict];
+                NSLog(@"grav: %@",@{@"x":[NSNumber numberWithDouble:motion.gravity.x],@"y":[NSNumber numberWithDouble:motion.gravity.y],@"z":[NSNumber numberWithDouble:motion.gravity.z]});
+                [[self.coreMotionData objectForKey:GravityKey] addObject:motion];
             }
             
         }
         if ([[self.coreMotionData objectForKey:AccelerometerKey] count] >= MAX_NUMBER && [[self.coreMotionData objectForKey:GravityKey] count] >= MAX_NUMBER) {
             [self notifySensorRecordsAvaliable:[self.coreMotionData objectForKey:GravityKey]];
+            self.accReady = YES;
+            self.gravReady = YES;
             [self.motionManager stopDeviceMotionUpdates];
         }
     }];
@@ -335,14 +353,14 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
     [self.motionManager startGyroUpdatesToQueue:[NSOperationQueue currentQueue] withHandler:^(CMGyroData *gyroData, NSError *error) {
         if (error == nil) {
             if ([[self.coreMotionData objectForKey:GyroscopeKey] count] < MAX_NUMBER) {
-                NSDictionary *dict = @{@"x":[NSNumber numberWithDouble:gyroData.rotationRate.x],@"y":[NSNumber numberWithDouble:gyroData.rotationRate.y],@"z":[NSNumber numberWithDouble:gyroData.rotationRate.z]};
-                NSLog(@"gyro: %@",dict);
-                [[self.coreMotionData objectForKey:GyroscopeKey] addObject:dict];
+                NSLog(@"gyro: %@",@{@"x":[NSNumber numberWithDouble:gyroData.rotationRate.x],@"y":[NSNumber numberWithDouble:gyroData.rotationRate.y],@"z":[NSNumber numberWithDouble:gyroData.rotationRate.z]});
+                [[self.coreMotionData objectForKey:GyroscopeKey] addObject:gyroData];
             }
         }
         
         if ([[self.coreMotionData objectForKey:GyroscopeKey] count] >= MAX_NUMBER) {
             [self notifySensorRecordsAvaliable:[self.coreMotionData objectForKey:GyroscopeKey]];
+            self.gyroReady  = YES;
             [self.motionManager stopGyroUpdates];
         }
     }];
@@ -356,14 +374,14 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
     [self.motionManager startMagnetometerUpdatesToQueue:[NSOperationQueue currentQueue] withHandler:^(CMMagnetometerData *magnetometerData, NSError *error) {
         if (error == nil) {
             if ([[self.coreMotionData objectForKey:MagnetometerKey] count] < MAX_NUMBER) {
-                NSDictionary *dict = @{@"x":[NSNumber numberWithDouble:magnetometerData.magneticField.x],@"y":[NSNumber numberWithDouble:magnetometerData.magneticField.y],@"z":[NSNumber numberWithDouble:magnetometerData.magneticField.z]};
-                NSLog(@"magnet: %@",dict);
-                [[self.coreMotionData objectForKey:MagnetometerKey] addObject:dict];
+                NSLog(@"magnet: %@",@{@"x":[NSNumber numberWithDouble:magnetometerData.magneticField.x],@"y":[NSNumber numberWithDouble:magnetometerData.magneticField.y],@"z":[NSNumber numberWithDouble:magnetometerData.magneticField.z]});
+                [[self.coreMotionData objectForKey:MagnetometerKey] addObject:magnetometerData];
             }
         }
         
         if ([[self.coreMotionData objectForKey:MagnetometerKey] count] >= MAX_NUMBER) {
             [self notifySensorRecordsAvaliable:[self.coreMotionData objectForKey:MagnetometerKey]];
+            self.magReady = YES;
             [self.motionManager stopMagnetometerUpdates];
         }
     }];
@@ -431,8 +449,6 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
                                                         object:self
                                                       userInfo:@{LBDeviceInfoManagerSensorValueKey:records}];
 }
-
-
 #pragma mark - utils
 - (void)wait {
     [_condition lock];
@@ -447,3 +463,66 @@ NSString *const LBDeviceInfoManagerSensorValueKey = @"LBDeviceInfoManagerSensorV
 }
 
 @end
+
+
+
+
+@implementation LBDeviceInfoManager (Network)
+
+
+- (void)uploadDeviveInfoToServer
+{
+    NSLog(@"upload device info to server ");
+    
+    NSMutableArray *sensorRecordsToUpload = [NSMutableArray array];
+    
+    [self.coreMotionData enumerateKeysAndObjectsUsingBlock:^(NSString * key, NSArray* obj, BOOL *stop) {
+        
+        
+        if ([key isEqualToString:AccelerometerKey]) {
+            for (CMDeviceMotion *motion  in obj) {
+                LBAccelerateRecord *acc = [[LBAccelerateRecord alloc] initWithDeviceMotion:motion];
+                [sensorRecordsToUpload addObject:acc];
+            }
+        }
+        
+        if ([key isEqualToString:GravityKey]) {
+            for (CMDeviceMotion *motion  in obj) {
+                LBGravityRecord *grav = [[LBGravityRecord alloc] initWithDeviceMotion:motion];
+                [sensorRecordsToUpload addObject:grav];
+            }
+        }
+        
+        if ([key isEqualToString:GyroscopeKey]) {
+            for (CMGyroData *data  in obj) {
+                LBGyroRecord *gyro = [[LBGyroRecord alloc] initWithCMGyroData:data];
+                [sensorRecordsToUpload addObject:gyro];
+            }
+        }
+        
+        
+        if ([key isEqualToString:MagnetometerKey]) {
+            for (CMMagnetometerData *data  in obj) {
+                LBMagnetometerRecord *mag = [[LBMagnetometerRecord alloc] initWithMagnatometerData:data];
+                [sensorRecordsToUpload addObject:mag];
+            }
+        }
+
+        
+    }];
+    
+    
+    [LBHTTPClient uploadSensorRecords:sensorRecordsToUpload
+                            onSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"upload sensor success ");
+    }
+                            onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"upload sensor failed ");
+    }];
+    
+}
+
+
+@end
+
+

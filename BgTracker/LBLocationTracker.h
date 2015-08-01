@@ -9,23 +9,31 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
-#import "LBLocationShareModel.h"
+#import "LBDataCollectionScheduler.h"
 
 @interface LBLocationTracker : NSObject <CLLocationManagerDelegate>
 
-@property (nonatomic) CLLocationCoordinate2D myLastLocation;
-@property (nonatomic) CLLocationAccuracy myLastLocationAccuracy;
+@property (nonatomic        ) CLLocationCoordinate2D myLastLocation;
+@property (nonatomic        ) CLLocationAccuracy     myLastLocationAccuracy;
+@property (nonatomic, assign) NSTimeInterval         dataColletionInterval;
+@property (strong,nonatomic ) LBDataCollectionScheduler    * scheduler;
 
-@property (strong,nonatomic) LBLocationShareModel * shareModel;
-
-@property (nonatomic) CLLocationCoordinate2D myLocation;
-@property (nonatomic) CLLocationAccuracy myLocationAccuracy;
+@property (nonatomic        ) CLLocationCoordinate2D myLocation;
+@property (nonatomic        ) CLLocationAccuracy     myLocationAccuracy;
 
 + (CLLocationManager *)sharedLocationManager;
 
 - (void)startLocationTracking;
+- (void)startLocationTrackingWithTimeInterval:(NSTimeInterval)time;
 - (void)stopLocationTracking;
-- (void)updateLocationToServer;
 
+
+@end
+
+
+
+@interface LBLocationTracker (Network)
+
+- (void)uploadLocationToServer;
 
 @end

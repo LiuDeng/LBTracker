@@ -14,7 +14,7 @@
 - (instancetype)init
 {
     if (self = [super init]) {
-        self.timestamp = [[NSDate date] timeIntervalSince1970];
+        self.timestamp = [[NSDate date] timeIntervalSince1970] * 1000;
     }
     return self;
 }
@@ -89,6 +89,24 @@
     return self;
 }
 
+
+@end
+
+/////////////////////////////////////////////////////////////////////
+
+
+@implementation LBGyroRecord
+
+- (instancetype)initWithCMGyroData:(CMGyroData *)gyroData
+{
+    if (self = [super init]) {
+        self.senserName = @"gyro";
+        self.accuracy   = @(1.0);
+        self.values     = [NSArray arrayWithObjects:@(gyroData.rotationRate.x),@(gyroData.rotationRate.y),@(gyroData.rotationRate.z),nil];
+    }
+    
+    return self;
+}
 
 @end
 

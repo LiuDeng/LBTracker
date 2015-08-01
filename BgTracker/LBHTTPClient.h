@@ -26,16 +26,16 @@
 
 + (LBHTTPClient *)sharedClient;
 
-- (void)initializeClientWithDelegate:(id<LBHTTPClientDelegate>)delegate;
+- (void)initializeClientWithDelegate:(id<LBHTTPClientDelegate>)delegate appID:(NSString *)appID;
 
 + (void)uploadLocationRecord:(LBLocationRecord *)locationRecord
-                    onSuccess:(void (^)(id responseObject, NSDictionary *info))successBlock
-                    onFailure:(void (^)(NSError *error, NSDictionary *info))failedBlock;
+                    onSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))successBlock
+                    onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failedBlock;
 
 
 + (void)uploadSensorRecords:(NSArray *)sensorRecords
-                  onSuccess:(void (^)(id responseObject, NSDictionary *info))successBlock
-                  onFailure:(void (^)(NSError *error, NSDictionary *info))failedBlock;
+                  onSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))successBlock
+                  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failedBlock;
 
 
 @end

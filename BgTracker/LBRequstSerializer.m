@@ -44,6 +44,7 @@ static NSString *const kLeancloudAppKey = @"1zohz2ihxp9dhqamhfpeaer8nh1ewqd9ueph
         parameters = dic;
     }
     NSMutableURLRequest *request = [super requestWithMethod:method URLString:URLString parameters:parameters error:error];
+    request.timeoutInterval = 10;
     if (request) {
         [request setValue:kLeancloudAppID forHTTPHeaderField:@"X-AVOSCloud-Application-Id"];
         [request setValue:kLeancloudAppKey forHTTPHeaderField:@"X-AVOSCloud-Application-Key"];

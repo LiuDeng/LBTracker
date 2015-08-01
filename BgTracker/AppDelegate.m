@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "LBLocationCenter.h"
+//#import "LBLocationCenter.h"
 #import "SettingsKeys.h"
 
 
@@ -48,7 +48,7 @@ willFinishLaunchingWithOptions:( NSDictionary *)launchOptions {
     
     
     // SDK Usage
-    [LBTrackerInterface initalizeTrackerWithDelegate:self];
+    [LBTrackerInterface initalizeTrackerWithDelegate:self appID:@"55bc5d8e00b0cb9c40dec37b"];
     
     return YES;
 }

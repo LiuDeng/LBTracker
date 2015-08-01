@@ -27,6 +27,7 @@ DEF_SINGLETON;
 + (void)initializeDataCenterWithDelegate:(id<LBDataCenterDelegate>)delegate;
 
 - (void)startDataColletionWithTimeInterval:(NSTimeInterval)time;
+
 - (void)stopDataCollection;
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "LBDataCollectionScheduler.h"
 
 extern NSString *const LBDeviceInfoManagerCoreMotionDataReadyNotification;
 extern NSString *const LBDeviceInfoManagerSensorValueKey;
@@ -19,9 +19,12 @@ typedef void(^getDeviceIdCallback)(NSString *deviceId, NSError* err);
 
 + (instancetype)sharedInstance;
 
+
+@property (nonatomic, strong) LBDataCollectionScheduler *scheduler;
+
 @property (nonatomic, strong ) NSString *uuid;
 @property (nonatomic, strong ) NSString *hardwareID;
-@property (nonatomic, strong ) NSString *appID;
+@property (nonatomic, strong ) NSString *bundleID;
 @property (nonatomic, strong ) NSString *deviceType;/// iOS
 
 
@@ -83,4 +86,17 @@ typedef void(^getDeviceIdCallback)(NSString *deviceId, NSError* err);
 /**距离感应器*/
 - (BOOL)isProximityAvailable;
 
+
 @end
+
+
+
+
+
+@interface LBDeviceInfoManager (Network)
+
+- (void)uploadDeviveInfoToServer;
+
+@end
+
+

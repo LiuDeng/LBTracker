@@ -37,19 +37,19 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-
-+ (void)initalizeTrackerWithDelegate:(id<LBTrackerDelegate>)delegate;
++ (void)initalizeTrackerWithDelegate:(id<LBTrackerDelegate>)delegate appID:(NSString *)appID;
 {
-    [[self sharedInterface] initalizeTrackerWithDelegate:delegate];
+    [[self sharedInterface] initalizeTrackerWithDelegate:delegate appID:appID];
+
 }
 
-
-- (void)initalizeTrackerWithDelegate:(id<LBTrackerDelegate>)delegate
+- (void)initalizeTrackerWithDelegate:(id<LBTrackerDelegate>)delegate appID:(NSString *)appID
 {
     self.delegate = delegate;
     [LBDataCenter initializeDataCenterWithDelegate:self];
-    [[LBHTTPClient sharedClient] initializeClientWithDelegate:self];
+    [[LBHTTPClient sharedClient] initializeClientWithDelegate:self appID:appID];
 }
+
 
 
 + (void)initalizeTrackerWithDelegate:(id<LBTrackerDelegate>)delegate retryCount:(NSUInteger)count
@@ -59,12 +59,11 @@
 
 /*启动Tracker,工作方式:
  1. 开启一次定位数据采集,和传感器数据采集.采集到数据后停掉定位和传感器.等待定时器唤起下一次数据采集.
- 2. 每10分钟启动一次定位请求,同时启动一次连续10秒钟的传感器数据采集.
- 3. 传感器数据采集时间结束 && 定位数据返回 ＝> 启动数据上传.
+ 2. 每3分钟启动一次定位请求,同时启动一次连续10次的传感器数据采集.并启动数据上传
  */
 + (BOOL)startTracker
 {
-    return [self startTrackerWithUploadTimeInterval:10*60];
+    return [self startTrackerWithUploadTimeInterval:1*60];
 
 }
 

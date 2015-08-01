@@ -14,20 +14,41 @@
 #import "LBSenserRecord.h"
 #import "LBDataCenter.h"
 
-
+NSString *const LBHTTPClientErrorDemain = @"LBHTTPClient.errorDomain";
 static NSString *const kLBSenzLeancloudHostURlString  = @"https://api.leancloud.cn";
 static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f306f4fc254cdc7becb73821a";
-//
-//typedef void(^LBHTTPClientUploadSuccessBlock)(id reponseObject, NSDictionary *info);
-//typedef void(^LBHTTPClientFailureBlock)(id reponseObject, NSDictionary *info);
-//
+
+
+typedef NS_ENUM(NSInteger, HTTPClientErrorType) {
+    HTTPClientErrorTypeNetworkLost = -1,
+    HTTPClientErrorTypeDeviceInfoError = -2
+};
+
+
+NSError * ErrorWithType(HTTPClientErrorType type)
+{
+    
+    NSError *error = nil;
+    switch (type) {
+        case HTTPClientErrorTypeNetworkLost: {
+            error = [NSError errorWithDomain:LBHTTPClientErrorDemain code:type userInfo:@{@"reason":@"network was lost"}];
+            break;
+        }
+        case HTTPClientErrorTypeDeviceInfoError: {
+            error = [NSError errorWithDomain:LBHTTPClientErrorDemain code:type userInfo:@{@"reason":@"device info use to create installation error "}];
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    
+    return error;
+}
+
+
 
 @interface LBHTTPClient ()
-
-//@property (nonatomic, copy) LBHTTPClientUploadSuccessBlock lusBlock;
-//@property (nonatomic, copy) LBHTTPClientFailureBlock lufBlock;
-//@property (nonatomic, copy) LBHTTPClientUploadSuccessBlock susBlock;
-//@property (nonatomic, copy) LBHTTPClientFailureBlock sufBlock;
 
 @end
 
@@ -59,7 +80,7 @@ static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f3
     return __sharedManager;
 }
 
-- (void)initializeClientWithDelegate:(id<LBHTTPClientDelegate>)delegate
+- (void)initializeClientWithDelegate:(id<LBHTTPClientDelegate>)delegate appID:(NSString *)appID
 {
     self.delegate = delegate;
     if ([LBInstallation installationAvaliable]) {
@@ -72,15 +93,15 @@ static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f3
 #pragma clang diagnostic ignored "-Wunused"
 
     NSString *hardwareId = [[LBDeviceInfoManager sharedInstance] hardwareID];
-    NSString *appid = [[LBDeviceInfoManager sharedInstance] appID];
     NSString *deviceType = @"ios";
     
     NSDictionary *param =   @{
-                              @"hardwareId":@"abb235df333333555fsdfsg"/*hardwareId*/,
-                              @"appid":@"55603e35e4b07ae45cd1e581"/*appid*/,
-                              @"deviceType":@"android"/*deviceType*/
+                              @"hardwareId":hardwareId,
+                              
+                              @"appid":[appID copy],
+                              @"deviceType":deviceType
                               };
-    
+
     [self queryInstallationWithDevitionInfo:param];
 #pragma clang diagnostic pop
 
@@ -105,13 +126,23 @@ static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f3
         if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
             if(!connectionError && [data length] > 0){
                 NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:NULL];
-                LBInstallation *installation = [[LBInstallation alloc] initWithDictionary:dict[@"result"]];
-                [installation saveToDisk];
-                if (strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(HTTPClientDidInitializedWithInfo:)]) {
-                    [strongSelf.delegate HTTPClientDidInitializedWithInfo:nil];
+                if (!dict[@"error"] && dict[@"result"]) {
+                    
+                    LBInstallation *installation = [[LBInstallation alloc] initWithDictionary:dict[@"result"]];
+                    NSLog(@"installation : %@", [installation JSONRepesentation]);
+                    [installation saveToDisk];
+                    if (strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(HTTPClientDidInitializedWithInfo:)]) {
+                        [strongSelf.delegate HTTPClientDidInitializedWithInfo:@{@"installation":installation}];
+                    }
+                }else{
+                    if (strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(HTTPClientDidFailToInitializeWithError:)]) {
+                        [strongSelf.delegate HTTPClientDidFailToInitializeWithError:ErrorWithType(HTTPClientErrorTypeDeviceInfoError)];
+                    }
                 }
             }else{
-                NSLog(@"error : %@",connectionError);
+                if (strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(HTTPClientDidFailToInitializeWithError:)]) {
+                    [strongSelf.delegate HTTPClientDidFailToInitializeWithError:ErrorWithType(HTTPClientErrorTypeNetworkLost)];
+                }
             }
         }
     }];
@@ -123,8 +154,8 @@ static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f3
 
 
 + (void)uploadLocationRecord:(LBLocationRecord *)locationRecord
-                   onSuccess:(void (^)(id responseObject, NSDictionary *info))successBlock
-                   onFailure:(void (^)(NSError *error, NSDictionary *info))failedBlock;
+                   onSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))successBlock
+                   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failedBlock;
 
 {
     [[self sharedClient] uploadLocationRecord:locationRecord onSuccess:successBlock onFailure:failedBlock];
@@ -144,25 +175,39 @@ static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f3
  
  */
 - (void)uploadLocationRecord:(LBLocationRecord *)locationRecord
-                   onSuccess:(void (^)(id responseObject, NSDictionary *info))successBlock
-                   onFailure:(void (^)(NSError *error, NSDictionary *info))failedBlock;
+                   onSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))successBlock
+                   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failedBlock;
 
 {
-//    self.lusBlock = successBlock;
-//    self.lufBlock = failedBlock;
-    NSDictionary *param = @{@"timestamp":@([locationRecord.timestamp timeIntervalSince1970]),
+
+    NSDictionary *param = @{@"timestamp":@([locationRecord.timestamp timeIntervalSince1970] * 1000),
                             @"type":@"location",
                             @"source":@"internal",
                             @"locationRadius":@(locationRecord.horizontalAccuracy),
                             @"location":[locationRecord JSONRepresentation]};
     
+    __weak typeof(self) weakSelf = self;
     [self POST:@"1.1/classes/Log"
     parameters:param
        success:^(AFHTTPRequestOperation *operation, id responseObject) {
            NSLog(@"success ");
+           NSDictionary *resp = (NSDictionary * )responseObject;
+           NSString *log = [NSString stringWithFormat:@"location.success: %@ , %@", resp[@"createdAt"],resp[@"objectId"]];
+           [weakSelf logStringToFile:log];
+
+           if (successBlock) {
+               successBlock(operation, responseObject);
+           }
     }
        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
            NSLog(@"fail");
+           NSLog(@"upload location error ");
+           NSString *log = [NSString stringWithFormat:@"location.error: %@ ", error];
+           [weakSelf logStringToFile:log];
+           if (failedBlock) {
+               failedBlock(operation, error);
+           }
+           
 //           [[LBDataCenter sharedInstance] pushPendingLocationRecord:locationRecord];
     }];
     
@@ -171,8 +216,8 @@ static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f3
 
 
 + (void)uploadSensorRecords:(NSArray *)sensorRecords
-                  onSuccess:(void (^)(id responseObject, NSDictionary *info))successBlock
-                  onFailure:(void (^)(NSError *error, NSDictionary *info))failedBlock;
+                  onSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))successBlock
+                  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failedBlock;
 {
     [[self sharedClient] uploadSensorRecords:sensorRecords
                                    onSuccess:successBlock
@@ -189,35 +234,77 @@ static NSString *const kLBSenzAuthIDString = @"5548eb2ade57fc001b000001938f317f3
  
  */
 - (void)uploadSensorRecords:(NSArray *)sensorRecords
-                  onSuccess:(void (^)(id responseObject, NSDictionary *info))successBlock
-                  onFailure:(void (^)(NSError *error, NSDictionary *info))failedBlock;
+                  onSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))successBlock
+                  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failedBlock;
 {
-//    self.susBlock = successBlock;
-//    self.sufBlock = failedBlock;
+
     
     NSMutableArray *JSONArray = [NSMutableArray arrayWithCapacity:[sensorRecords count]];
     [sensorRecords enumerateObjectsUsingBlock:^(LBSenserRecord* obj, NSUInteger idx, BOOL *stop) {
         [JSONArray addObject:[obj JSONRepresentation]];
     }];
     
-    NSDictionary *param = @{@"timestamp":@([[NSDate date] timeIntervalSince1970]),
+    NSDictionary *param = @{@"timestamp":@([[NSDate date] timeIntervalSince1970] *1000),
                             @"type":@"sensor",
                             @"value":@{
                                     @"events":JSONArray
                                     }};
+    
+    __weak typeof(self) weakSelf = self;
     [self POST:@"1.1/classes/Log"
     parameters:param
        success:^(AFHTTPRequestOperation *operation, id responseObject) {
            NSLog(@"success ");
+           NSDictionary *resp = (NSDictionary * )responseObject;
+           NSString *log = [NSString stringWithFormat:@"senser.success: %@ , %@", resp[@"createdAt"],resp[@"objectId"]];
+           [weakSelf logStringToFile:log];
+           if (successBlock) {
+               successBlock(operation, responseObject);
+           }
        }
        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//           [[LBDataCenter sharedInstance] pushPendingSensorRecords:sensorRecords];
+           
+           NSLog(@"upload sensor error ");
+           NSString *log = [NSString stringWithFormat:@"sensor.error: %@ ", error];
+           [weakSelf logStringToFile:log];
+           if (failedBlock) {
+               failedBlock(operation, error);
+           }
        }];
-
 }
 
 
 
+
+
+- (void)logStringToFile:(NSString *)stringToLog
+{
+    NSLog(@"%@", stringToLog);
+    
+    NSString * logFileName = [NSString stringWithFormat:@"%@.log", @"LocationTracker"];
+    
+    NSDateFormatter * dateFormatter = nil;
+    if (dateFormatter == nil) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZ"];
+    }
+    
+    stringToLog = [NSString stringWithFormat:@"%@ --- INFO: %@\n", [dateFormatter stringFromDate:[NSDate date]], stringToLog];
+    
+    //Get the file path
+    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *fileName = [documentsDirectory stringByAppendingPathComponent:logFileName];
+    
+    //Create file if it doesn't exist
+    if (![[NSFileManager defaultManager] fileExistsAtPath:fileName])
+        [[NSFileManager defaultManager] createFileAtPath:fileName contents:nil attributes:nil];
+    
+    //Append text to file (you'll probably want to add a newline every write)
+    NSFileHandle *file = [NSFileHandle fileHandleForUpdatingAtPath:fileName];
+    [file seekToEndOfFile];
+    [file writeData:[stringToLog dataUsingEncoding:NSUTF8StringEncoding]];
+    [file closeFile];
+}
 
 
 
